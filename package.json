@@ -1,0 +1,23 @@
+{
+  "name": "Media-Player",
+  "version": "1.0.0",
+  "description": "A simple media player",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "package-mac": "electron-packager . \"Media Player\" --platform=darwin --arch=x64 --icon=\"./images/icon.icns\" --overwrite --prune=true --out=release-builds",
+    "package-win": "electron-packager . \"Media Player\" --platform=win32 --arch=x64 --icon=\"./images/icon.ico\" --overwrite --prune=true --out=release-builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"Media Player\""
+  },
+  "repository": "https://github.com/ecnepsnai/Media-Player",
+  "keywords": [
+    "start",
+    "package-mac",
+    "package-win"
+  ],
+  "author": "Ian Spence",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "~1.6.2",
+    "electron-packager": "^8.7.0"
+  }
+}

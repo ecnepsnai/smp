@@ -1,0 +1,35 @@
+<!DOCTYPE html><html>
+<head>
+    <meta charset="UTF-8">
+    <title>Media Player</title>
+</head>
+<body>
+    <div class="container-fluid" id="welcome">
+        <h1>Welcome</h1>
+        <p class="lead">
+            Please open a directory containing media files.
+        </p>
+        <button type="button" class="btn btn-primary" id="open_dir_button">Open Directory</button>
+    </div>
+    <div id="browser" style="display:none">
+    </div>
+</body>
+
+<script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+<script src="scripts/jquery.js"></script>
+<script>if (window.module) module = window.module;</script>
+
+<script>
+    function addCSS(name) {
+        var link = document.createElement('link');
+        link.setAttribute('rel', 'stylesheet');
+        link.setAttribute('href', require('path').join(__dirname, 'css', name));
+        document.head.appendChild(link);
+    }
+    addCSS('style.css');
+</script>
+
+<script>
+    require('./renderer.js');
+</script>
+</html>
