@@ -6,6 +6,12 @@ $('#version').text('v' + appVersion);
 
 $(function() {
     $('#welcome').show();
+    var os = require('os');
+    if (os.type() === 'Darwin') {
+        $('#welcome').css({
+            'padding-top': '1em'
+        });
+    }
 });
 
 document.addEventListener('keydown', function(event) {
