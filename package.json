@@ -5,8 +5,8 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "package-mac": "electron-packager . \"Media Player\" --platform=darwin --arch=x64 --icon=\"./images/icon.icns\" --overwrite --prune=true --out=release-builds",
-    "package-win": "electron-packager . \"Media Player\" --platform=win32 --arch=x64 --icon=\"./images/icon.ico\" --overwrite --prune=true --out=release-builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"Media Player\""
+    "package-mac": "electron-packager . \"Media Player\" --platform=darwin --arch=x64 --icon=\"./images/icon.icns\" --overwrite --prune=true --out=release-builds && zip -r osx.zip \"release-builds/Media Player-darwin-x64\"",
+    "package-win": "electron-packager . \"Media Player\" --platform=win32 --arch=x64 --icon=\"./images/icon.ico\" --overwrite --prune=true --out=release-builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"Media Player\" && zip -r windows.zip \"release-builds/Media Player-win32-x64\""
   },
   "repository": "https://github.com/ecnepsnai/Media-Player",
   "keywords": [
