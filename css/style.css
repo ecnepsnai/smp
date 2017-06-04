@@ -6,6 +6,7 @@ body {
     background-color: #212121;
     color: #fff;
     overflow: hidden;
+    -webkit-user-select:none;
 }
 
 #welcome {

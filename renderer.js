@@ -4,6 +4,10 @@ const {app, dialog, globalShortcut} = require('electron').remote;
 var appVersion = app.getVersion();
 $('#version').text('v' + appVersion);
 
+$(function() {
+    $('#welcome').show();
+});
+
 document.addEventListener('keydown', function(event) {
     if (event.key === 'ArrowLeft' || event.key === 'j') {
         changeMedia(true);

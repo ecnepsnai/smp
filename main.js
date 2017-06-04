@@ -17,9 +17,10 @@ function createWindow () {
   // Create the browser window.
   mainWindow = new BrowserWindow({
     titleBarStyle: 'hidden',
-    icon: 'images/icon.png',
+    icon: __dirname + 'images/icon.png',
     width: 890,
-    height: 510
+    height: 510,
+    backgroundColor: '#212121'
   });
 
   // and load the index.html of the app.
