@@ -16,6 +16,7 @@ let mainWindow;
 function createWindow () {
   // Create the browser window.
   mainWindow = new BrowserWindow({
+    titleBarStyle: 'hidden',
     icon: 'images/icon.png',
     width: 890,
     height: 510

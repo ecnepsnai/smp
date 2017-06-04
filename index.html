@@ -5,11 +5,13 @@
 </head>
 <body>
     <div class="container-fluid" id="welcome">
-        <h1>Welcome</h1>
-        <p class="lead">
-            Please open a directory containing media files.
-        </p>
-        <button type="button" class="btn btn-primary" id="open_dir_button">Open Directory</button>
+        <div>
+            <img src="images/icon.png" class="logo" />
+            <h1>Media Player <small id="version"></small></h1>
+        </div>
+        <p>Please open a directory containing media files.</p>
+        <span class="button" id="open_dir_button">Open Directory</span>
+        <span class="button" id="open_file_button">Open Single File</span>
     </div>
     <div id="browser" style="display:none">
     </div>

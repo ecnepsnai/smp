@@ -1,6 +1,9 @@
 /* jslint esversion: 6 */
 const {app, dialog, globalShortcut} = require('electron').remote;
 
+var appVersion = app.getVersion();
+$('#version').text('v' + appVersion);
+
 document.addEventListener('keydown', function(event) {
     if (event.key === 'ArrowLeft' || event.key === 'j') {
         changeMedia(true);
@@ -41,16 +44,23 @@ function buildFileArray(path) {
     try {
         var fileList = [];
         fs.readdirSync(path).forEach(function(file, index) {
-            SUPPORTED_MEDIA_TYPES.forEach(function(type) {
-                if (file.toLowerCase().endsWith(type)) {
-                    fileList.push(path + '/' + file);
-                }
-            });
+            if (isMediaFile(file)) {
+                fileList.push(path + '/' + file);
+            }
         });
         return fileList;
     } catch(e) {
         errorDialog('Error', 'Error occurred while locating media files: ' + e);
     }
+}
+
+function isMediaFile(file) {
+    for (var i = 0, count = SUPPORTED_MEDIA_TYPES.length; i < count; i++) {
+        if (file.toLowerCase().endsWith(SUPPORTED_MEDIA_TYPES[i])) {
+            return true;
+        }
+    }
+    return false;
 }
 
 function showMedia() {
@@ -150,4 +160,25 @@ function browseForDirectory() {
     }
 }
 
+function browseForSingleFile() {
+    var pathArr = dialog.showOpenDialog({
+        title: 'Open Media File',
+        message: 'Select the media file to play',
+        properties: ['openFile']
+    });
+    if (pathArr && pathArr.length === 1) {
+        var path = pathArr[0];
+        if (isMediaFile(path)) {
+            files = [path];
+            currentFileIdx = 0;
+            $('#welcome').hide();
+            $browser.show();
+            showMedia();
+        } else {
+            errorDialog('No supported files', 'No compatible media files were located. Supported files are: ' + SUPPORTED_MEDIA_TYPES.join(', '));
+        }
+    }
+}
+
 $('#open_dir_button').on('click', browseForDirectory);
+$('#open_file_button').on('click', browseForSingleFile);

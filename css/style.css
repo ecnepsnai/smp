@@ -5,10 +5,41 @@ body {
     margin: 0;
     background-color: #212121;
     color: #fff;
+    overflow: hidden;
 }
 
 #welcome {
     margin: 1em;
+    margin-top: 2em;
+}
+
+#welcome h1 {
+    display: inline-block;
+}
+
+#welcome h1 small {
+    font-size: 20pt;
+    opacity: .5;
+}
+
+#welcome img {
+    width: 30px;
+}
+
+.button {
+    border: 1px solid;
+    border-radius: 3px;
+    padding: .5em;
+    margin-top: 1em;
+    border-color: #fff;
+    transition: background-color .1s, color .1s;
+}
+
+.button:hover {
+    cursor: pointer;
+    background-color: #fff;
+    color: #212121;
+    border-color: #fff;
 }
 
 h1 {
