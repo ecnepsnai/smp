@@ -23,6 +23,7 @@ document.addEventListener('keydown', function(event) {
 var files;
 var currentFileIdx;
 var $browser = $('#browser');
+var $title = $('#title');
 var fs = require('fs');
 const SUPPORTED_MEDIA_TYPES = [
     '.webm',
@@ -33,6 +34,13 @@ const SUPPORTED_MEDIA_TYPES = [
     '.gif',
     '.bmp'
 ];
+
+$browser.on('mouseenter', function() {
+    $title.show();
+});
+$browser.on('mouseleave', function() {
+    $title.hide();
+});
 
 function errorDialog(title, message) {
     dialog.showMessageBox({
@@ -69,8 +77,9 @@ function isMediaFile(file) {
 
 function showMedia() {
     var media = files[currentFileIdx];
+    $title.html(media + '<br>' + (currentFileIdx + 1) + '/' + files.length);
     if (media.toLowerCase().endsWith('.webm')) {
-        var $video = $('<video loop controls class="media"></video>');
+        var $video = $('<video loop class="media"></video>');
         $video.attr('src', files[currentFileIdx]);
         $browser.empty();
         $browser.append($video);
