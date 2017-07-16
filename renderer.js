@@ -34,6 +34,7 @@ var fs = require('fs');
 const SUPPORTED_MEDIA_TYPES = [
     '.webm',
     '.webp',
+    '.mp4',
     '.jpg',
     '.jpeg',
     '.png',
@@ -84,8 +85,8 @@ function isMediaFile(file) {
 function showMedia() {
     var media = files[currentFileIdx];
     $title.html(media + '<br>' + (currentFileIdx + 1) + '/' + files.length);
-    if (media.toLowerCase().endsWith('.webm')) {
-        var $video = $('<video loop class="media"></video>');
+    if (media.toLowerCase().endsWith('.webm') || media.toLowerCase().endsWith('.mp4')) {
+        var $video = $('<video loop class="media" controls loop></video>');
         $video.attr('src', files[currentFileIdx]);
         $browser.empty();
         $browser.append($video);
@@ -183,7 +184,15 @@ function browseForSingleFile() {
     var pathArr = dialog.showOpenDialog({
         title: 'Open Media File',
         message: 'Select the media file to play',
-        properties: ['openFile']
+        properties: ['openFile'],
+        filters: [
+            {
+                name: 'Supported media types',
+                extensions: SUPPORTED_MEDIA_TYPES.map(function(ext) {
+                    return ext.substring(1);
+                })
+            }
+        ]
     });
     if (pathArr && pathArr.length === 1) {
         var path = pathArr[0];
