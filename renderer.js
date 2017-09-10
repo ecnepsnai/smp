@@ -1,7 +1,7 @@
 /* jslint esversion: 6 */
 const {app, dialog, globalShortcut} = require('electron').remote;
 
-var appVersion = app.getVersion();
+const appVersion = app.getVersion();
 $('#version').text('v' + appVersion);
 
 $(function() {
@@ -28,9 +28,10 @@ document.addEventListener('keydown', function(event) {
 
 var files;
 var currentFileIdx;
-var $browser = $('#browser');
-var $title = $('#title');
-var fs = require('fs');
+const $browser = $('#browser');
+const $title = $('#title');
+const fs = require('fs');
+const trash = require('trash');
 const SUPPORTED_MEDIA_TYPES = [
     '.webm',
     '.webp',
@@ -59,7 +60,7 @@ function errorDialog(title, message) {
     });
 }
 
-function buildFileArray(path) {
+function buildFileArray(path, shuffle) {
     try {
         var fileList = [];
         fs.readdirSync(path).forEach(function(file, index) {
@@ -67,7 +68,7 @@ function buildFileArray(path) {
                 fileList.push(path + '/' + file);
             }
         });
-        return fileList;
+        return shuffle ? fileList.shuffle() : fileList;
     } catch(e) {
         errorDialog('Error', 'Error occurred while locating media files: ' + e);
     }
@@ -115,7 +116,7 @@ function changeMedia(back) {
     }
 
     if (!back) {
-        if (currentFileIdx === files.length - 1) {
+        if (currentFileIdx >= files.length - 1) {
             currentFileIdx = 0;
         } else {
             currentFileIdx++;
@@ -135,29 +136,42 @@ function deleteMedia() {
         return;
     }
 
-    dialog.showMessageBox({
-        type: 'warning',
-        buttons: ['Yes', 'No'],
-        defaultId: 0,
-        title: 'Delete File',
-        message: 'Are you sure you wish to delete this file?'
-    }, function(cancel) {
-        if (!cancel) {
-            try {
-                fs.unlinkSync(files[currentFileIdx]);
-                files.splice(currentFileIdx, 1);
-                if (files.length === 0) {
-                    $('#welcome').show();
-                    $browser.empty();
-                    $browser.hide();
-                } else {
-                    showMedia();
-                }
-            } catch(e) {
-                errorDialog('Error', 'Error while deleting media file: ' + e);
+    var doDelete = function() {
+        try {
+            var file = files[currentFileIdx];
+            if ($('perm_delete').is(':checked')) {
+                fs.unlinkSync(file);
+            } else {
+                trash([file]);
             }
+            files.splice(currentFileIdx, 1);
+            if (files.length === 0) {
+                $('#welcome').show();
+                $browser.empty();
+                $browser.hide();
+            } else {
+                changeMedia();
+            }
+        } catch(e) {
+            errorDialog('Error', 'Error while deleting media file: ' + e);
         }
-    });
+    };
+
+    if ($('delete_prompt').is(':checked')) {
+        dialog.showMessageBox({
+            type: 'warning',
+            buttons: ['Yes', 'No'],
+            defaultId: 0,
+            title: 'Delete File',
+            message: 'Are you sure you wish to delete this file?'
+        }, function(cancel) {
+            if (!cancel) {
+                doDelete();
+            }
+        });
+    } else {
+        doDelete();
+    }
 }
 
 function browseForDirectory() {
@@ -168,7 +182,7 @@ function browseForDirectory() {
     });
     if (pathArr && pathArr.length === 1) {
         var path = pathArr[0];
-        files = buildFileArray(path);
+        files = buildFileArray(path, $('#shuffle').is(':checked'));
         if (files.length > 0) {
             currentFileIdx = 0;
             $('#welcome').hide();
@@ -207,6 +221,19 @@ function browseForSingleFile() {
         }
     }
 }
+
+Array.prototype.shuffle = function() {
+    let counter = this.length;
+    while (counter > 0) {
+        let index = Math.floor(Math.random() * counter);
+        counter--;
+        let temp = this[counter];
+        this[counter] = this[index];
+        this[index] = temp;
+    }
+
+    return this;
+};
 
 $('#open_dir_button').on('click', browseForDirectory);
 $('#open_file_button').on('click', browseForSingleFile);
