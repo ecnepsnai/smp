@@ -142,7 +142,7 @@ function deleteMedia() {
     var doDelete = function() {
         try {
             var file = files[currentFileIdx];
-            if ($('perm_delete').is(':checked')) {
+            if ($('#perm_delete').is(':checked')) {
                 fs.unlinkSync(file);
             } else {
                 trash([file]);
@@ -153,14 +153,19 @@ function deleteMedia() {
                 $browser.empty();
                 $browser.hide();
             } else {
-                changeMedia();
+                if (currentFileIdx == 0) {
+                    currentFileIdx = 0;
+                } else {
+                    currentFileIdx --;
+                }
+                showMedia();
             }
         } catch(e) {
             errorDialog('Error', 'Error while deleting media file: ' + e);
         }
     };
 
-    if ($('delete_prompt').is(':checked')) {
+    if ($('#delete_prompt').is(':checked')) {
         dialog.showMessageBox({
             type: 'warning',
             buttons: ['Yes', 'No'],
