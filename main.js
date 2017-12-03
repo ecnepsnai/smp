@@ -1,64 +1,135 @@
 /* jslint esversion: 6 */
-
-const {app, BrowserWindow} = require('electron');
+const {app, BrowserWindow, Menu} = require('electron');
 
 const path = require('path');
 const url = require('url');
 
-// Keep a global reference of the window object, if you don't, the window will
-// be closed automatically when the JavaScript object is garbage collected.
-let mainWindow;
+let windows = [];
 
 function createWindow () {
-  // Create the browser window.
-  mainWindow = new BrowserWindow({
-    titleBarStyle: 'hidden',
-    icon: __dirname + 'images/icon.png',
-    width: 890,
-    height: 510,
-    backgroundColor: '#212121'
-  });
+    let window = new BrowserWindow({
+        titleBarStyle: 'hiddenInset',
+        icon: __dirname + 'images/icon.png',
+        width: 890,
+        height: 510,
+        backgroundColor: '#212121'
+    });
+    windows.push(window);
 
-  // and load the index.html of the app.
-  mainWindow.loadURL(url.format({
-    pathname: path.join(__dirname, 'index.html'),
-    protocol: 'file:',
-    slashes: true
-  }));
+    window.loadURL(url.format({
+        pathname: path.join(__dirname, 'index.html'),
+        protocol: 'file:',
+        slashes: true
+    }));
 
-  // Open the DevTools.
-  // mainWindow.webContents.openDevTools();
+    window.webContents.openDevTools();
 
-  // Emitted when the window is closed.
-  mainWindow.on('closed', function () {
-    // Dereference the window object, usually you would store windows
-    // in an array if your app supports multi windows, this is the time
-    // when you should delete the corresponding element.
-    mainWindow = null;
-  });
+    // Emitted when the window is closed.
+    window.on('closed', function () {
+        var index = windows.indexOf(window);
+        windows.splice(index, 1);
+    });
 }
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
-app.on('ready', createWindow);
+function appReady() {
+    const menuTemplate = [
+        {
+            label: 'Media Player',
+            submenu: [
+                {
+                    label: 'About Media Player',
+                    click: () => {
+                        let aboutWindow = new BrowserWindow({
+                            icon: __dirname + 'images/icon.png',
+                            width: 440,
+                            height: 160,
+                            title: 'About Media Player'
+                        });
+                        aboutWindow.loadURL(url.format({
+                            pathname: path.join(__dirname, 'about.html'),
+                            protocol: 'file:',
+                            slashes: true
+                        }));
+                        aboutWindow.webContents.openDevTools();
+                    }
+                },
+                {
+                    type: 'separator'
+                },
+                {
+                    label: 'Quit',
+                    accelerator: 'CommandOrControl+Q',
+                    click: () => {
+                        app.quit();
+                    }
+                }
+            ]
+        },
+        {
+            label: 'File',
+            submenu: [
+                {
+                    label: 'Open Single File',
+                    accelerator: 'CommandOrControl+O',
+                    click: () => {
+                        let focused = BrowserWindow.getFocusedWindow();
+                        if (focused) {
+                            console.log('open_single_file');
+                            focused.webContents.send('open_single_file');
+                        }
+                    }
+                },
+                {
+                    label: 'Open Directory',
+                    accelerator: 'CommandOrControl+Shift+O',
+                    click: () => {
+                        let focused = BrowserWindow.getFocusedWindow();
+                        if (focused) {
+                            console.log('open_directory');
+                            focused.webContents.send('open_directory');
+                        }
+                    }
+                },
+                {
+                    type: 'separator'
+                },
+                {
+                    label: 'New Window',
+                    accelerator: 'CommandOrControl+N',
+                    click: () => {
+                        createWindow();
+                    }
+                },
+                {
+                    label: 'Close Window',
+                    accelerator: 'CommandOrControl+W',
+                    click: () => {
+                        let focused = BrowserWindow.getFocusedWindow();
+                        if (focused) {
+                            focused.close();
+                        }
+                    }
+                }
+            ]
+        }
+    ];
+    const menu = Menu.buildFromTemplate(menuTemplate);
+    Menu.setApplicationMenu(menu);
+
+    createWindow();
+}
+
+app.on('ready', appReady);
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {
-  // On OS X it is common for applications and their menu bar
-  // to stay active until the user quits explicitly with Cmd + Q
-  if (process.platform !== 'darwin') {
-    app.quit();
-  }
+    if (process.platform !== 'darwin') {
+        app.quit();
+    }
 });
 
 app.on('activate', function () {
-  // On OS X it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
-  if (mainWindow === null) {
-    createWindow();
-  }
+    if (mainWindow === null) {
+        createWindow();
+    }
 });
-
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.

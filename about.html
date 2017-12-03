@@ -1,0 +1,28 @@
+<!DOCTYPE html><html>
+<head>
+    <meta charset="UTF-8">
+    <title>About Media Player</title>
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+    <div class="container-fluid" id="welcome">
+        <div>
+            <img src="images/icon.png" class="logo" />
+            <h1>Media Player <small id="version"></small></h1>
+            <p>Media Player is Copyright &copy; Ian Spence 2017. Media Player is open source software licensed under MIT. The source is available on <a href="#" id="github">GitHub</a>.</p>
+        </div>
+    </div>
+</body>
+
+<script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+<script src="scripts/jquery.js"></script>
+<script>if (window.module) module = window.module;</script>
+<script>
+    const {app, shell} = require('electron').remote;
+    const appVersion = app.getVersion();
+    $('#version').text('v' + appVersion);
+    $('#github').click(function() {
+        shell.openExternal('https://github.com/ecnepsnai/Media-Player');
+    });
+</script>
+</html>

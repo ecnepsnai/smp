@@ -1,8 +1,6 @@
 /* jslint esversion: 6 */
-const {app, dialog, globalShortcut} = require('electron').remote;
-
-const appVersion = app.getVersion();
-$('#version').text('v' + appVersion);
+const {dialog, globalShortcut} = require('electron').remote;
+const ipc = require('electron').ipcRenderer;
 
 $(function() {
     $('#welcome').show();
@@ -21,8 +19,6 @@ document.addEventListener('keydown', function(event) {
         changeMedia(false);
     } else if (event.key === 'Backspace' || event.key === 'Delete' || event.key === 'x') {
         deleteMedia();
-    } else if (event.key === 'o' && (event.ctrlKey || event.metaKey)) {
-        browseForDirectory();
     }
 });
 
@@ -49,6 +45,13 @@ $browser.on('mouseenter', function() {
 $browser.on('mouseleave', function() {
     $title.hide();
 });
+ipc.on('open_single_file', (event, message) => {
+    browseForSingleFile();
+});
+ipc.on('open_directory', (event, message) => {
+    browseForDirectory();
+});
+
 
 function errorDialog(title, message) {
     dialog.showMessageBox({

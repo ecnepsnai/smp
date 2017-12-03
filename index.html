@@ -2,12 +2,14 @@
 <head>
     <meta charset="UTF-8">
     <title>Media Player</title>
+    <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
+    <div id="window-drag"></div>
     <div class="container-fluid" id="welcome" style="display:none">
         <div>
             <img src="images/icon.png" class="logo" />
-            <h1>Media Player <small id="version"></small></h1>
+            <h1>Media Player</h1>
         </div>
         <p>Please open a directory containing media files.</p>
         <span class="button" id="open_dir_button">Open Directory</span>
@@ -26,18 +28,7 @@
 <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
 <script src="scripts/jquery.js"></script>
 <script>if (window.module) module = window.module;</script>
-
 <script>
-    function addCSS(name) {
-        var link = document.createElement('link');
-        link.setAttribute('rel', 'stylesheet');
-        link.setAttribute('href', require('path').join(__dirname, 'css', name));
-        document.head.appendChild(link);
-    }
-    addCSS('style.css');
-</script>
-
-<script>
-    require('./renderer.js');
+    require('./player.js');
 </script>
 </html>
