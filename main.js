@@ -12,7 +12,8 @@ function createWindow () {
         icon: __dirname + 'images/icon.png',
         width: 890,
         height: 510,
-        backgroundColor: '#212121'
+        backgroundColor: '#212121',
+        autoHideMenuBar: true
     });
     windows.push(window);
 
@@ -40,9 +41,11 @@ function appReady() {
                         let aboutWindow = new BrowserWindow({
                             icon: __dirname + 'images/icon.png',
                             width: 440,
-                            height: 160,
-                            title: 'About Media Player'
+                            height: 170,
+                            title: 'About Media Player',
+
                         });
+                        aboutWindow.setMenu(null);
                         aboutWindow.loadURL(url.format({
                             pathname: path.join(__dirname, 'about.html'),
                             protocol: 'file:',
@@ -126,7 +129,7 @@ app.on('window-all-closed', function () {
 });
 
 app.on('activate', function () {
-    if (mainWindow === null) {
+    if (windows.length === 0) {
         createWindow();
     }
 });
