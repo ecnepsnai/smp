@@ -1,5 +1,5 @@
 /* jslint esversion: 6 */
-const {dialog, globalShortcut} = require('electron').remote;
+const {dialog} = require('electron').remote;
 const ipc = require('electron').ipcRenderer;
 
 $(function() {
@@ -45,10 +45,10 @@ $browser.on('mouseenter', function() {
 $browser.on('mouseleave', function() {
     $title.hide();
 });
-ipc.on('open_single_file', (event, message) => {
+ipc.on('open_single_file', () => {
     browseForSingleFile();
 });
-ipc.on('open_directory', (event, message) => {
+ipc.on('open_directory', () => {
     browseForDirectory();
 });
 
@@ -66,7 +66,7 @@ function errorDialog(title, message) {
 function buildFileArray(path, shuffle) {
     try {
         var fileList = [];
-        fs.readdirSync(path).forEach(function(file, index) {
+        fs.readdirSync(path).forEach(function(file) {
             if (isMediaFile(file)) {
                 fileList.push(path + '/' + file);
             }
@@ -145,7 +145,9 @@ function deleteMedia() {
             if ($('#perm_delete').is(':checked')) {
                 fs.unlinkSync(file);
             } else {
-                trash([file]);
+                trash([file]).catch(() => {
+                    fs.unlinkSync(file);
+                });
             }
             files.splice(currentFileIdx, 1);
             if (files.length === 0) {
@@ -153,10 +155,8 @@ function deleteMedia() {
                 $browser.empty();
                 $browser.hide();
             } else {
-                if (currentFileIdx == 0) {
+                if (currentFileIdx === 0) {
                     currentFileIdx = 0;
-                } else {
-                    currentFileIdx --;
                 }
                 showMedia();
             }
