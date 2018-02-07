@@ -155,7 +155,7 @@ function deleteMedia() {
                 $browser.empty();
                 $browser.hide();
             } else {
-                if (currentFileIdx === 0) {
+                if (currentFileIdx === files.length) {
                     currentFileIdx = 0;
                 }
                 showMedia();
