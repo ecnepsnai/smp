@@ -10,6 +10,7 @@ let playbackOptions = {
 
 $(function() {
     syncApplicationMenu();
+    toggleView(false);
     $('#welcome').show();
     var os = require('os');
     if (os.type() === 'Darwin') {
@@ -199,9 +200,7 @@ function deleteMedia() {
             }
             files.splice(currentFileIdx, 1);
             if (files.length === 0) {
-                $('#welcome').show();
-                $browser.empty();
-                $browser.hide();
+                toggleView(false);
             } else {
                 if (currentFileIdx === files.length) {
                     currentFileIdx = 0;
@@ -240,7 +239,7 @@ function browseForDirectory() {
         var path = pathArr[0];
         files = buildFileArray(path);
         if (files.length > 0) {
-            toggleToPlayer();
+            toggleView(true);
         } else {
             errorDialog('No supported files', 'No compatible media files were located. Supported files are: ' + SUPPORTED_MEDIA_TYPES.join(', '));
         }
@@ -265,34 +264,50 @@ function browseForSingleFile() {
         var path = pathArr[0];
         if (isMediaFile(path)) {
             files = [path];
-            toggleToPlayer();
+            toggleView(true);
         } else {
             errorDialog('No supported files', 'No compatible media files were located. Supported files are: ' + SUPPORTED_MEDIA_TYPES.join(', '));
         }
     }
 }
 
-function toggleToPlayer() {
-    currentFileIdx = 0;
-    $('#welcome').hide();
-    $browser.show();
-    resizeWindow();
-    showMedia();
-    $('body').toggleClass('light', false);
-    $('body').toggleClass('dark', true);
+function toggleView(showPlayer) {
+    if (showPlayer) {
+        currentFileIdx = 0;
+        $('#welcome').hide();
+        $browser.show();
+        resizeWindow(true);
+        showMedia();
+        $('body').toggleClass('light', false);
+        $('body').toggleClass('dark', true);
+    } else {
+        $('#welcome').show();
+        $browser.empty();
+        $browser.hide();
+        resizeWindow(false);
+        $('body').toggleClass('light', true);
+        $('body').toggleClass('dark', false);
+    }
 }
 
-function resizeWindow() {
+function resizeWindow(large) {
     let current = playerWindow.getBounds();
 
-    playerWindow.setBounds({
+    var bounds = {
         x: current.x,
-        y: current.y,
-        width: 890,
-        height: 510,
-    });
-    playerWindow.setResizable(true);
-    playerWindow.setFullScreenable(true);
+        y: current.y
+    };
+    if (large) {
+        bounds.width = 890;
+        bounds.height = 510;
+    } else {
+        bounds.width = 500;
+        bounds.height = 200;
+    }
+
+    playerWindow.setBounds(bounds);
+    playerWindow.setResizable(large);
+    playerWindow.setFullScreenable(large);
 }
 
 Array.prototype.shuffle = function() {
