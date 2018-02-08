@@ -1,4 +1,3 @@
-const packager = require('electron-packager');
 const exec = require('child_process').execSync;
 
 function cleanup() {
@@ -12,6 +11,7 @@ function cleanup() {
 }
 
 function packageApp() {
+    let packager = require('electron-packager');
     return packager({
         dir: '.',
         appCopyright: 'Copyright © Ian Spence 2018',
@@ -29,7 +29,10 @@ function packageApp() {
 
 cleanup().then(function() {
     packageApp().then(function() {
+        exec('mkdir -p build/artifacts');
         exec('zip -r osx.zip "build/Media Player-darwin-x64"');
+        exec('mv osx.zip build/artifacts/');
         exec('zip -r windows.zip "build/Media Player-win32-x64"');
+        exec('mv windows.zip build/artifacts/');
     });
 });
