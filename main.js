@@ -1,4 +1,3 @@
-/* jslint esversion: 6 */
 const {app, BrowserWindow, Menu} = require('electron');
 
 const path = require('path');
@@ -10,10 +9,12 @@ function createWindow () {
     let window = new BrowserWindow({
         titleBarStyle: 'hiddenInset',
         icon: __dirname + 'images/icon.png',
-        width: 890,
-        height: 510,
+        width: 500,
+        height: 200,
         backgroundColor: '#212121',
-        autoHideMenuBar: true
+        autoHideMenuBar: true,
+        resizable: false,
+        fullscreenable: false
     });
     windows.push(window);
 
@@ -110,6 +111,18 @@ function appReady() {
                         }
                     }
                 }
+            ]
+        },
+        {
+            label: 'View',
+            submenu: [
+                { role: 'reload' },
+                { type: 'separator' },
+                { role: 'resetzoom' },
+                { role: 'zoomin' },
+                { role: 'zoomout' },
+                { type: 'separator' },
+                { role: 'togglefullscreen' }
             ]
         }
     ];

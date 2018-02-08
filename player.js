@@ -1,5 +1,5 @@
-/* jslint esversion: 6 */
-const {dialog} = require('electron').remote;
+const {app, dialog} = require('electron').remote;
+const playerWindow = require('electron').remote.getCurrentWindow();
 const ipc = require('electron').ipcRenderer;
 
 $(function() {
@@ -195,6 +195,7 @@ function browseForDirectory() {
             currentFileIdx = 0;
             $('#welcome').hide();
             $browser.show();
+            resizeWindow();
             showMedia();
         } else {
             errorDialog('No supported files', 'No compatible media files were located. Supported files are: ' + SUPPORTED_MEDIA_TYPES.join(', '));
@@ -223,11 +224,25 @@ function browseForSingleFile() {
             currentFileIdx = 0;
             $('#welcome').hide();
             $browser.show();
+            resizeWindow();
             showMedia();
         } else {
             errorDialog('No supported files', 'No compatible media files were located. Supported files are: ' + SUPPORTED_MEDIA_TYPES.join(', '));
         }
     }
+}
+
+function resizeWindow() {
+    let current = playerWindow.getBounds();
+
+    playerWindow.setBounds({
+        x: current.x,
+        y: current.y,
+        width: 890,
+        height: 510,
+    });
+    playerWindow.setResizable(true);
+    playerWindow.setFullScreenable(true);
 }
 
 Array.prototype.shuffle = function() {

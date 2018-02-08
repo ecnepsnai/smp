@@ -1,4 +1,3 @@
-/* jslint esversion: 6 */
 const packager = require('electron-packager');
 const exec = require('child_process').execSync;
 
@@ -15,7 +14,7 @@ function cleanup() {
 function packageApp() {
     return packager({
         dir: '.',
-        appCopyright: '© Ian Spence 2017',
+        appCopyright: 'Copyright © Ian Spence 2018',
         arch: 'x64',
         icon: 'images/icon',
         name: 'Media Player',
