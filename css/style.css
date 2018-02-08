@@ -3,9 +3,17 @@ body {
     font-family: -apple-system, BlinkMacSystemFont, sans-serif;
     padding: 0;
     margin: 0;
-    background-color: #212121;
-    color: #fff;
     overflow: hidden;
+}
+
+body.light {
+    background-color: #F5F5F5;
+    color: #212121;
+}
+
+body.dark {
+    background-color: #212121;
+    color: #F5F5F5;
 }
 
 :not(input):not(textarea),
@@ -51,15 +59,15 @@ input, button, textarea, :focus {
     border-radius: 3px;
     padding: .5em;
     margin-top: 1em;
-    border-color: #fff;
+    border-color: #455A64;
     transition: background-color .1s, color .1s;
 }
 
 .button:hover {
     cursor: pointer;
-    background-color: #fff;
-    color: #212121;
-    border-color: #fff;
+    background-color: #455A64;
+    color: #F5F5F5;
+    border-color: #455A64;
 }
 
 h1 {
@@ -85,11 +93,11 @@ video {
 }
 
 a {
-    color: white;
+    color: #455A64;
 }
 
 a:active {
-    color: white;
+    color: #455A64;
 }
 
 #browser {

@@ -239,11 +239,7 @@ function browseForDirectory() {
         var path = pathArr[0];
         files = buildFileArray(path);
         if (files.length > 0) {
-            currentFileIdx = 0;
-            $('#welcome').hide();
-            $browser.show();
-            resizeWindow();
-            showMedia();
+            toggleToPlayer();
         } else {
             errorDialog('No supported files', 'No compatible media files were located. Supported files are: ' + SUPPORTED_MEDIA_TYPES.join(', '));
         }
@@ -268,15 +264,21 @@ function browseForSingleFile() {
         var path = pathArr[0];
         if (isMediaFile(path)) {
             files = [path];
-            currentFileIdx = 0;
-            $('#welcome').hide();
-            $browser.show();
-            resizeWindow();
-            showMedia();
+            toggleToPlayer();
         } else {
             errorDialog('No supported files', 'No compatible media files were located. Supported files are: ' + SUPPORTED_MEDIA_TYPES.join(', '));
         }
     }
+}
+
+function toggleToPlayer() {
+    currentFileIdx = 0;
+    $('#welcome').hide();
+    $browser.show();
+    resizeWindow();
+    showMedia();
+    $('body').toggleClass('light', false);
+    $('body').toggleClass('dark', true);
 }
 
 function resizeWindow() {

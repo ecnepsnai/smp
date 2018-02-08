@@ -18,6 +18,8 @@ function createWindow () {
     });
     windows.push(window);
 
+    window.webContents.toggleDevTools();
+
     window.loadURL(url.format({
         pathname: path.join(__dirname, 'index.html'),
         protocol: 'file:',
