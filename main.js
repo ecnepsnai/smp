@@ -11,14 +11,12 @@ function createWindow () {
         icon: __dirname + 'images/icon.png',
         width: 500,
         height: 200,
-        backgroundColor: '#212121',
+        backgroundColor: '#F5F5F5',
         autoHideMenuBar: true,
         resizable: false,
         fullscreenable: false
     });
     windows.push(window);
-
-    window.webContents.toggleDevTools();
 
     window.loadURL(url.format({
         pathname: path.join(__dirname, 'index.html'),
@@ -30,6 +28,11 @@ function createWindow () {
     window.on('closed', function () {
         var index = windows.indexOf(window);
         windows.splice(index, 1);
+    });
+    
+    // Sync the app menu for macOS
+    window.on('focus', function() {
+        window.webContents.send('sync_menu');
     });
 }
 

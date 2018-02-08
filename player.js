@@ -98,6 +98,7 @@ ipc.on('open_directory', function() {
 ipc.on('toggleShuffle', toggleShuffle);
 ipc.on('togglePrompt', togglePrompt);
 ipc.on('togglePerm', togglePerm);
+ipc.on('sync_menu', syncApplicationMenu);
 
 
 function errorDialog(title, message) {
