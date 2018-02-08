@@ -2,7 +2,14 @@ const {app, dialog} = require('electron').remote;
 const playerWindow = require('electron').remote.getCurrentWindow();
 const ipc = require('electron').ipcRenderer;
 
+let playbackOptions = {
+    shuffle: false,
+    promptDelete: true,
+    permDelete: false
+};
+
 $(function() {
+    syncApplicationMenu();
     $('#welcome').show();
     var os = require('os');
     if (os.type() === 'Darwin') {
@@ -11,6 +18,41 @@ $(function() {
         });
     }
 });
+
+$('#shuffle').change(toggleShuffle);
+function toggleShuffle() {
+    playbackOptions.shuffle = !playbackOptions.shuffle;
+    $('#shuffle').prop('checked', playbackOptions.shuffle);
+    syncApplicationMenu();
+}
+
+$('#delete_prompt').change(togglePrompt);
+function togglePrompt() {
+    playbackOptions.promptDelete = !playbackOptions.promptDelete;
+    $('#delete_prompt').prop('checked', playbackOptions.promptDelete);
+    syncApplicationMenu();
+}
+
+$('#perm_delete').change(togglePerm);
+function togglePerm() {
+    playbackOptions.permDelete = !playbackOptions.permDelete;
+    $('#perm_delete').prop('checked', playbackOptions.permDelete);
+    syncApplicationMenu();
+}
+
+function syncApplicationMenu() {
+    let menu = app.getApplicationMenu();
+
+    let shuffleMenu = menu.getMenuItemById('toggleShuffle');
+    let promptMenu = menu.getMenuItemById('togglePrompt');
+    let permMenu = menu.getMenuItemById('toggleDelete');
+
+    shuffleMenu.checked = playbackOptions.shuffle;
+    promptMenu.checked = playbackOptions.promptDelete;
+    permMenu.checked = playbackOptions.permDelete;
+
+    playerWindow.setMenu(menu);
+}
 
 document.addEventListener('keydown', function(event) {
     if (event.key === 'ArrowLeft' || event.key === 'j') {
@@ -45,12 +87,17 @@ $browser.on('mouseenter', function() {
 $browser.on('mouseleave', function() {
     $title.hide();
 });
-ipc.on('open_single_file', () => {
+
+// Menu Handlers
+ipc.on('open_single_file', function() {
     browseForSingleFile();
 });
-ipc.on('open_directory', () => {
+ipc.on('open_directory', function() {
     browseForDirectory();
 });
+ipc.on('toggleShuffle', toggleShuffle);
+ipc.on('togglePrompt', togglePrompt);
+ipc.on('togglePerm', togglePerm);
 
 
 function errorDialog(title, message) {
@@ -63,7 +110,7 @@ function errorDialog(title, message) {
     });
 }
 
-function buildFileArray(path, shuffle) {
+function buildFileArray(path) {
     try {
         var fileList = [];
         fs.readdirSync(path).forEach(function(file) {
@@ -71,7 +118,7 @@ function buildFileArray(path, shuffle) {
                 fileList.push(path + '/' + file);
             }
         });
-        return shuffle ? fileList.shuffle() : fileList;
+        return playbackOptions.shuffle ? fileList.shuffle() : fileList;
     } catch(e) {
         errorDialog('Error', 'Error occurred while locating media files: ' + e);
     }
@@ -142,7 +189,7 @@ function deleteMedia() {
     var doDelete = function() {
         try {
             var file = files[currentFileIdx];
-            if ($('#perm_delete').is(':checked')) {
+            if (playbackOptions.permDelete) {
                 fs.unlinkSync(file);
             } else {
                 trash([file]).catch(() => {
@@ -165,7 +212,7 @@ function deleteMedia() {
         }
     };
 
-    if ($('#delete_prompt').is(':checked')) {
+    if (playbackOptions.promptDelete) {
         dialog.showMessageBox({
             type: 'warning',
             buttons: ['Yes', 'No'],
@@ -190,7 +237,7 @@ function browseForDirectory() {
     });
     if (pathArr && pathArr.length === 1) {
         var path = pathArr[0];
-        files = buildFileArray(path, $('#shuffle').is(':checked'));
+        files = buildFileArray(path);
         if (files.length > 0) {
             currentFileIdx = 0;
             $('#welcome').hide();

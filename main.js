@@ -75,7 +75,6 @@ function appReady() {
                     click: () => {
                         let focused = BrowserWindow.getFocusedWindow();
                         if (focused) {
-                            console.log('open_single_file');
                             focused.webContents.send('open_single_file');
                         }
                     }
@@ -86,7 +85,6 @@ function appReady() {
                     click: () => {
                         let focused = BrowserWindow.getFocusedWindow();
                         if (focused) {
-                            console.log('open_directory');
                             focused.webContents.send('open_directory');
                         }
                     }
@@ -124,10 +122,51 @@ function appReady() {
                 { type: 'separator' },
                 { role: 'togglefullscreen' }
             ]
+        },
+        {
+            label: 'Playback',
+            submenu: [
+                {
+                    label: 'Shuffle',
+                    id: 'toggleShuffle',
+                    type: 'checkbox',
+                    checked: false,
+                    click: () => {
+                        let focused = BrowserWindow.getFocusedWindow();
+                        if (focused) {
+                            focused.webContents.send('toggleShuffle');
+                        }
+                    }
+                },
+                {
+                    label: 'Prompt for deletion',
+                    id: 'togglePrompt',
+                    type: 'checkbox',
+                    checked: true,
+                    click: () => {
+                        let focused = BrowserWindow.getFocusedWindow();
+                        if (focused) {
+                            focused.webContents.send('togglePrompt');
+                        }
+                    }
+                },
+                {
+                    label: 'Permanently delete',
+                    id: 'toggleDelete',
+                    type: 'checkbox',
+                    checked: false,
+                    click: () => {
+                        let focused = BrowserWindow.getFocusedWindow();
+                        if (focused) {
+                            focused.webContents.send('togglePerm');
+                        }
+                    }
+                }
+            ]
         }
     ];
     const menu = Menu.buildFromTemplate(menuTemplate);
-    Menu.setApplicationMenu(menu);
+    app.setApplicationMenu(menu);
 
     createWindow();
 }
