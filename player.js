@@ -112,6 +112,23 @@ function errorDialog(title, message) {
     });
 }
 
+const stripChars = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    '\'': '&#39;',
+    '/': '&#x2F;',
+    '`': '&#x60;',
+    '=': '&#x3D;'
+  };
+
+function stripHTML(unsafe) {
+    return String(unsafe).replace(/[&<>"'`=\/]/g, function (s) {
+          return stripChars[s];
+    });
+}
+
 function buildFileArray(path) {
     try {
         var fileList = [];
@@ -137,7 +154,7 @@ function isMediaFile(file) {
 
 function showMedia() {
     var media = files[currentFileIdx];
-    $title.html(media + '<br>' + (currentFileIdx + 1) + '/' + files.length);
+    $title.html(stripHTML(media) + '<br>' + (currentFileIdx + 1) + '/' + files.length);
     if (media.toLowerCase().endsWith('.webm') || media.toLowerCase().endsWith('.mp4')) {
         var $video = $('<video loop class="media" controls loop></video>');
         $video.attr('src', files[currentFileIdx]);
