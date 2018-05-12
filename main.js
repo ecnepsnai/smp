@@ -8,7 +8,7 @@ let windows = [];
 function createWindow () {
     let window = new BrowserWindow({
         titleBarStyle: 'hiddenInset',
-        icon: __dirname + 'images/icon.png',
+        icon: path.join(__dirname, 'images', 'icon.png'),
         width: 500,
         height: 200,
         backgroundColor: '#F5F5F5',
@@ -45,7 +45,7 @@ function appReady() {
                     label: 'About Media Player',
                     click: () => {
                         let aboutWindow = new BrowserWindow({
-                            icon: __dirname + 'images/icon.png',
+                            icon: path.join(__dirname, 'images', 'icon.png'),
                             width: 440,
                             height: 170,
                             title: 'About Media Player',

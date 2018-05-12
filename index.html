@@ -1,6 +1,8 @@
-<!DOCTYPE html><html>
+<!DOCTYPE html>
+<html>
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self'">
     <title>Media Player</title>
     <link rel="stylesheet" href="css/style.css" />
 </head>
@@ -25,10 +27,7 @@
     </div>
 </body>
 
-<script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
-<script src="scripts/jquery.js"></script>
-<script>if (window.module) module = window.module;</script>
-<script>
-    require('./player.js');
-</script>
+<script type="text/javascript" src="init.js"></script>
+<script type="text/javascript" src="scripts/jquery.js"></script>
+<script type="text/javascript" src="player.js"></script>
 </html>
