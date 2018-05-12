@@ -23,7 +23,8 @@ function packageApp() {
         platform: 'win32,darwin',
         appBundleId: 'io.ecn.media-player',
         appCategoryType: 'public.app-category.entertainment',
-        osxSign: false
+        osxSign: false,
+        asar: true,
     });
 }
 
