@@ -5,10 +5,16 @@ const url = require('url');
 
 let windows = [];
 
+const staticDir = path.normalize(path.join(__dirname, '..', '..', '..', 'static'));
+const assetsDir = path.join(staticDir, 'assets');
+
+console.log(staticDir);
+console.log(assetsDir);
+
 function createWindow () {
     let window = new BrowserWindow({
         titleBarStyle: 'hiddenInset',
-        icon: path.join(__dirname, 'images', 'icon.png'),
+        icon: path.join(assetsDir, 'images', 'icon.png'),
         width: 500,
         height: 200,
         backgroundColor: '#F5F5F5',
@@ -17,9 +23,10 @@ function createWindow () {
         fullscreenable: false
     });
     windows.push(window);
+    window.webContents.openDevTools();
 
     window.loadURL(url.format({
-        pathname: path.join(__dirname, 'index.html'),
+        pathname: path.join(staticDir, 'index.html'),
         protocol: 'file:',
         slashes: true
     }));
@@ -29,7 +36,7 @@ function createWindow () {
         var index = windows.indexOf(window);
         windows.splice(index, 1);
     });
-    
+
     // Sync the app menu for macOS
     window.on('focus', function() {
         window.webContents.send('sync_menu');
@@ -45,7 +52,7 @@ function appReady() {
                     label: 'About Media Player',
                     click: () => {
                         let aboutWindow = new BrowserWindow({
-                            icon: path.join(__dirname, 'images', 'icon.png'),
+                            icon: path.join(assetsDir, 'images', 'icon.png'),
                             width: 440,
                             height: 170,
                             title: 'About Media Player',
@@ -53,7 +60,7 @@ function appReady() {
                         });
                         aboutWindow.setMenu(null);
                         aboutWindow.loadURL(url.format({
-                            pathname: path.join(__dirname, 'about.html'),
+                            pathname: path.join(staticDir, 'about.html'),
                             protocol: 'file:',
                             slashes: true
                         }));
@@ -173,7 +180,11 @@ function appReady() {
     const menu = Menu.buildFromTemplate(menuTemplate);
     app.setApplicationMenu(menu);
 
-    createWindow();
+    try {
+        createWindow();
+    } catch (e) {
+        console.error(e);
+    }
 }
 
 app.on('ready', appReady);
