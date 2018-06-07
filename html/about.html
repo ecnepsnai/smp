@@ -1,8 +1,9 @@
 <!DOCTYPE html><html>
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self'">
     <title>About Media Player</title>
-    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="assets/css/main.css" />
 </head>
 <body class="light">
     <div class="container-fluid" id="welcome">
@@ -14,15 +15,7 @@
     </div>
 </body>
 
-<script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
-<script src="scripts/jquery.js"></script>
-<script>if (window.module) module = window.module;</script>
-<script>
-    const {app, shell} = require('electron').remote;
-    const appVersion = app.getVersion();
-    $('#version').text('v' + appVersion);
-    $('#github').click(function() {
-        shell.openExternal('https://github.com/ecnepsnai/Media-Player');
-    });
-</script>
+<script type="text/javascript" src="assets/js/init.js"></script>
+<script type="text/javascript" src="assets/js/jquery.js"></script>
+<script type="text/javascript" src="assets/js/about.js"></script>
 </html>

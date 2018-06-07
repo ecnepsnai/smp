@@ -1,5 +1,7 @@
 const {app, BrowserWindow, Menu} = require('electron');
 
+if (require('electron-squirrel-startup')) return;
+
 const path = require('path');
 const url = require('url');
 
@@ -7,9 +9,6 @@ let windows = [];
 
 const staticDir = path.normalize(path.join(__dirname, '..', '..', '..', 'static'));
 const assetsDir = path.join(staticDir, 'assets');
-
-console.log(staticDir);
-console.log(assetsDir);
 
 function createWindow () {
     let window = new BrowserWindow({
@@ -23,7 +22,8 @@ function createWindow () {
         fullscreenable: false
     });
     windows.push(window);
-    window.webContents.openDevTools();
+
+    // window.webContents.openDevTools();
 
     window.loadURL(url.format({
         pathname: path.join(staticDir, 'index.html'),

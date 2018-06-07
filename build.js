@@ -1,15 +1,7 @@
 const exec = require('child_process').execSync;
-
-function cleanup() {
-    return new Promise(function(resolve) {
-        exec('rm -rf static/');
-        exec('rm -f *.zip');
-        exec('rm -rf node_modules/');
-        exec('npm install');
-        exec('gulp');
-        resolve();
-    });
-}
+const windowsInstaller = require('electron-winstaller');
+const macInstaller = require('electron-installer-dmg');
+const package = require('./package.json');
 
 function packageApp(platform) {
     let packager = require('electron-packager');
@@ -30,25 +22,40 @@ function packageApp(platform) {
 }
 
 function buildDarwin() {
-    return cleanup().then(() => {
-        return packageApp('darwin').then(() => {
-            exec('zip -r osx.zip "build/Media Player-darwin-x64"');
-            exec('mv osx.zip build/artifacts/');
+    return packageApp('darwin').then(() => {
+        return new Promise((resolve) => {
+            macInstaller({
+                appPath: 'build/Media Player-darwin-x64/Media Player.app',
+                name: 'Media Player',
+                out: 'build/artifacts',
+                icon: 'img/icon.icns'
+            }, (() => {
+                exec('mv "build/artifacts/Media Player.dmg" "build/artifacts/Media-Player-' + package.version + '.dmg"');
+                resolve();
+            }));
         });
     });
 }
 
 function buildWindows() {
-    return cleanup().then(() => {
-        return packageApp('win32').then(() => {
-            exec('zip -r windows.zip "build/Media Player-win32-x64"');
-            exec('mv windows.zip build/artifacts/');
+    return packageApp('win32').then(() => {
+        return windowsInstaller.createWindowsInstaller({
+            appDirectory: 'build/Media Player-win32-x64',
+            outputDirectory: 'build/artifacts',
+            title: 'Media Player',
+            setupIcon: 'img/icon.ico',
+            exe: 'Media Player.exe',
+            setupExe: 'Media-Player-' + package.version + '.exe',
         });
     });
 }
 
 exec('rm -rf build/');
 exec('mkdir -p build/artifacts');
+exec('rm -rf static/');
+exec('rm -rf node_modules/');
+exec('npm install');
+exec('gulp');
 buildDarwin().then(() => {
     buildWindows().then(() => {
         console.log('Finished!');
