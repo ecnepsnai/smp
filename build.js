@@ -1,4 +1,12 @@
 const exec = require('child_process').execSync;
+
+exec('rm -rf build/');
+exec('mkdir -p build/artifacts');
+exec('rm -rf static/');
+exec('rm -rf node_modules/');
+exec('npm install');
+exec('gulp');
+
 const windowsInstaller = require('electron-winstaller');
 const macInstaller = require('electron-installer-dmg');
 const package = require('./package.json');
@@ -50,12 +58,6 @@ function buildWindows() {
     });
 }
 
-exec('rm -rf build/');
-exec('mkdir -p build/artifacts');
-exec('rm -rf static/');
-exec('rm -rf node_modules/');
-exec('npm install');
-exec('gulp');
 buildDarwin().then(() => {
     buildWindows().then(() => {
         console.log('Finished!');
