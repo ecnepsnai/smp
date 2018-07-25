@@ -1,6 +1,6 @@
 {
   "name": "media-player",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "description": "A simple media player.",
   "main": "static/assets/js/main.js",
   "scripts": {
@@ -14,7 +14,7 @@
   "license": "MIT",
   "devDependencies": {
     "electron": "^2.0.2",
-    "electron-installer-dmg": "^1.0.0",
+    "electron-installer-dmg": "^2.0.0",
     "electron-packager": "^12.1.0",
     "electron-winstaller": "^2.6.4",
     "event-stream": "^3.3.4",
