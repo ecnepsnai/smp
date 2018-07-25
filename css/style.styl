@@ -36,27 +36,34 @@ input, button, textarea, :focus
 
     h1
         display: inline-block
+        margin-left: .25rem
 
         small
             font-size: 20pt
             opacity: .5
 
     img
-        width: 30px
+        width: 40px
+        height: 40px
+
+
+    .header
+        display: flex
+        align-items: center
 
 .button
     border: 1px solid
     border-radius: 3px
     padding: .5em
     margin-top: 1em
-    border-color: #455A64
+    border-color: #E55C00
     transition: background-color .1s, color .1s
 
     &:hover
         cursor: pointer
-        background-color: #455A64
+        background-color: #E55C00
         color: #F5F5F5
-        border-color: #455A64
+        border-color: #E55C00
 
 h1
     padding: 0
@@ -78,10 +85,10 @@ video
     padding: 5px
 
 a
-    color: #455A64
+    color: #E55C00
 
     &:active
-        color: #455A64
+        color: #E55C00
 
 #browser
     display: flex
