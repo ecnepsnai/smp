@@ -108,7 +108,8 @@ function errorDialog(title, message) {
         buttons: ['Dismiss'],
         defaultId: 0,
         title: title,
-        message: message
+        message: message,
+        browserWindow: playerWindow,
     });
 }
 
@@ -205,9 +206,10 @@ function deleteMedia() {
         return;
     }
 
+    var file = files[currentFileIdx];
+
     var doDelete = function() {
         try {
-            var file = files[currentFileIdx];
             if (playbackOptions.permDelete) {
                 fs.unlinkSync(file);
             } else {
@@ -230,12 +232,13 @@ function deleteMedia() {
     };
 
     if (playbackOptions.promptDelete) {
-        dialog.showMessageBox({
+        dialog.showMessageBox(playerWindow, {
             type: 'warning',
-            buttons: ['Yes', 'No'],
+            buttons: ['Delete', 'Do Nothing'],
             defaultId: 0,
+            cancelId: 1,
             title: 'Delete File',
-            message: 'Are you sure you wish to delete this file?'
+            message: 'Are you sure you wish to delete this file?\n' + file,
         }, function(cancel) {
             if (!cancel) {
                 doDelete();
@@ -247,10 +250,10 @@ function deleteMedia() {
 }
 
 function browseForDirectory() {
-    var pathArr = dialog.showOpenDialog({
+    var pathArr = dialog.showOpenDialog(playerWindow, {
         title: 'Open Media Directory',
         message: 'Select directory containing media files',
-        properties: ['openDirectory']
+        properties: ['openDirectory'],
     });
     if (pathArr && pathArr.length === 1) {
         var path = pathArr[0];
@@ -264,7 +267,7 @@ function browseForDirectory() {
 }
 
 function browseForSingleFile() {
-    var pathArr = dialog.showOpenDialog({
+    var pathArr = dialog.showOpenDialog(playerWindow, {
         title: 'Open Media File',
         message: 'Select the media file to play',
         properties: ['openFile'],

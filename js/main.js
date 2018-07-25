@@ -56,6 +56,8 @@ function appReady() {
                             width: 440,
                             height: 170,
                             title: 'About Media Player',
+                            parent: BrowserWindow.getFocusedWindow(),
+                            modal: true,
 
                         });
                         aboutWindow.setMenu(null);
