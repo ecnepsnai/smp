@@ -26,6 +26,7 @@ function packageApp(platform) {
         appCategoryType: 'public.app-category.entertainment',
         osxSign: false,
         asar: true,
+        darwinDarkModeSupport: true,
     });
 }
 
