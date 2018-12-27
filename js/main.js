@@ -2,6 +2,7 @@ const {app, BrowserWindow, Menu} = require('electron');
 
 const path = require('path');
 const url = require('url');
+const os = require('os');
 
 let windows = [];
 
@@ -49,7 +50,7 @@ function appReady() {
                 {
                     label: 'About Media Player',
                     click: () => {
-                        let aboutWindow = new BrowserWindow({
+                        var options = {
                             icon: path.join(assetsDir, 'images', 'icon.png'),
                             width: 440,
                             height: 170,
@@ -57,7 +58,14 @@ function appReady() {
                             parent: BrowserWindow.getFocusedWindow(),
                             modal: true,
 
-                        });
+                        };
+
+                        // Give a little more height on macOS for the "close" button
+                        if (os.type() === 'Darwin') {
+                            options.height = 200;
+                        }
+
+                        let aboutWindow = new BrowserWindow(options);
                         aboutWindow.setMenu(null);
                         aboutWindow.loadURL(url.format({
                             pathname: path.join(staticDir, 'about.html'),
