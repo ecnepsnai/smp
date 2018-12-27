@@ -1,4 +1,4 @@
-const {app, dialog} = require('electron').remote;
+const {app, dialog, systemPreferences} = require('electron').remote;
 const playerWindow = require('electron').remote.getCurrentWindow();
 const ipc = require('electron').ipcRenderer;
 
@@ -19,6 +19,16 @@ $(function() {
         });
     }
 });
+
+systemPreferences.subscribeNotification( 'AppleInterfaceThemeChangedNotification', function() {
+    updateDarkMode(systemPreferences.isDarkMode());
+});
+updateDarkMode(systemPreferences.isDarkMode());
+
+function updateDarkMode(isDark) {
+    $('body').toggleClass('light', !isDark);
+    $('body').toggleClass('dark', isDark);
+}
 
 $('#shuffle').change(toggleShuffle);
 function toggleShuffle() {
@@ -298,15 +308,11 @@ function toggleView(showPlayer) {
         $browser.show();
         resizeWindow(true);
         showMedia();
-        $('body').toggleClass('light', false);
-        $('body').toggleClass('dark', true);
     } else {
         $('#welcome').show();
         $browser.empty();
         $browser.hide();
         resizeWindow(false);
-        $('body').toggleClass('light', true);
-        $('body').toggleClass('dark', false);
     }
 }
 
