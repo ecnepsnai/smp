@@ -1,69 +1,73 @@
 /* global require */
 /* jshint esversion:6 */
-const gulp = require('gulp');
-const stylus = require('gulp-stylus');
-const htmlmin = require('gulp-htmlmin');
-const watch = require('gulp-watch');
 const batch = require('gulp-batch');
 const clean = require('gulp-clean');
 const concat = require('gulp-concat');
-const es = require('event-stream');
-const sourcemaps = require('gulp-sourcemaps');
+const gulp = require('gulp');
+const htmlmin = require('gulp-htmlmin');
+const minify = require('gulp-minify');
 const rename = require('gulp-rename');
+const sourcemaps = require('gulp-sourcemaps');
+const strip = require('gulp-strip-comments');
+const stylus = require('gulp-stylus');
+const watch = require('gulp-watch');
 
 const BUILD_DIRECTORY_BASE = './static';
 
-gulp.task('js', function() {
+gulp.task('js', gulp.parallel(function(done) {
     'use strict';
 
-    return es.merge([
-        gulp.src('./js/ng/**/*.js')
-            .pipe(sourcemaps.init())
-            .pipe(concat('ng.js'))
-            .pipe(sourcemaps.write('.'))
-            .pipe(gulp.dest(BUILD_DIRECTORY_BASE + '/assets/js')),
-        gulp.src(['./js/*.js', './../shared/*.js'])
-            .pipe(sourcemaps.init())
-            .pipe(sourcemaps.write('.'))
-            .pipe(gulp.dest(BUILD_DIRECTORY_BASE + '/assets/js'))
-    ]);
-});
-
-gulp.task('html', function() {
+    return gulp.src('./js/ng/**/*.js')
+        .pipe(sourcemaps.init())
+        .pipe(concat('ng.js'))
+        .pipe(sourcemaps.write('.'))
+        .pipe(gulp.dest(BUILD_DIRECTORY_BASE + '/assets/js'));
+}, function(done) {
     'use strict';
 
-    return es.merge([
-        gulp.src('./js/ng/pages/**/*.html')
-            .pipe(htmlmin({
-                collapseWhitespace: true,
-                collapseBooleanAttributes: true,
-                removeComments: true,
-            }))
-            .pipe(rename({dirname: ''}))
-            .pipe(gulp.dest(BUILD_DIRECTORY_BASE + '/assets/html/')),
-        gulp.src('./html/*.html')
-            .pipe(htmlmin({
-                collapseWhitespace: true,
-                collapseBooleanAttributes: true,
-                removeComments: true,
-            }))
-            .pipe(gulp.dest(BUILD_DIRECTORY_BASE + '/'))
-        ]);
-});
+    return gulp.src('./js/*.js')
+        .pipe(sourcemaps.init())
+        .pipe(sourcemaps.write('.'))
+        .pipe(gulp.dest(BUILD_DIRECTORY_BASE + '/assets/js'));
+}));
 
-gulp.task('css', function() {
+gulp.task('html', gulp.parallel(function(done) {
     'use strict';
 
-    return es.merge([
-        gulp.src(['./fonts/*.css'])
-            .pipe(concat('fonts.css'))
-            .pipe(gulp.dest(BUILD_DIRECTORY_BASE + '/assets/css')),
-        gulp.src(['./css/*.styl', './../shared/*.styl'])
-            .pipe(concat('main.styl'))
-            .pipe(stylus())
-            .pipe(gulp.dest(BUILD_DIRECTORY_BASE + '/assets/css'))
-    ]);
-});
+    return gulp.src('./js/ng/pages/**/*.html')
+        .pipe(htmlmin({
+            collapseWhitespace: true,
+            collapseBooleanAttributes: true,
+            removeComments: true,
+        }))
+        .pipe(rename({ dirname: '' }))
+        .pipe(gulp.dest(BUILD_DIRECTORY_BASE + '/assets/html/'));
+}, function(done) {
+    'use strict';
+
+    return gulp.src('./html/*.html')
+        .pipe(htmlmin({
+            collapseWhitespace: true,
+            collapseBooleanAttributes: true,
+            removeComments: true,
+        }))
+        .pipe(gulp.dest(BUILD_DIRECTORY_BASE + '/'));
+}));
+
+gulp.task('css', gulp.parallel(function(done) {
+    'use strict';
+
+    return gulp.src(['./fonts/*.css'])
+        .pipe(concat('fonts.css'))
+        .pipe(gulp.dest(BUILD_DIRECTORY_BASE + '/assets/css'));
+}, gulp.parallel(function(done) {
+    'use strict';
+
+    return gulp.src(['./css/*.styl', './../shared/*.styl'])
+        .pipe(concat('main.styl'))
+        .pipe(stylus())
+        .pipe(gulp.dest(BUILD_DIRECTORY_BASE + '/assets/css'));
+})));
 
 gulp.task('img', function() {
     'use strict';
@@ -82,8 +86,8 @@ gulp.task('fonts', function() {
 gulp.task('clean', function() {
     'use strict';
 
-    return gulp.src(BUILD_DIRECTORY_BASE + '/', {read: false})
-        .pipe(clean({force: true}));
+    return gulp.src(BUILD_DIRECTORY_BASE + '/', { read: false })
+        .pipe(clean({ force: true }));
 });
 
 gulp.task('copy', function() {
@@ -93,31 +97,36 @@ gulp.task('copy', function() {
         .pipe(gulp.dest(BUILD_DIRECTORY_BASE));
 });
 
-gulp.task('watch', function() {
+gulp.task('watch', gulp.parallel(
+    function(done) {
+        gulp.watch('./js/**/*.js', gulp.series('js'));
+        gulp.watch(['./css/*.styl', './../shared/*.styl'], gulp.series('css'));
+        gulp.watch(['./html/*.html', './include/*.html', './js/ng/pages/**/*.html'], gulp.series('html'));
+        gulp.watch('./img/**/*', gulp.series('img'));
+        gulp.watch('./fonts/*', gulp.series('fonts'));
+    }
+));
+
+gulp.task('release', gulp.parallel(function(done) {
     'use strict';
 
-    watch('./js/**/*.js', batch(function(events, done) {
-        gulp.start('js', done);
-    }));
-    watch(['./css/*.styl', './../shared/*.styl'], batch(function(events, done) {
-        gulp.start('css', done);
-    }));
-    watch(['./html/**/*.html', './include/*.html', './js/ng/pages/**/*.html'], batch(function(events, done) {
-        gulp.start('html', done);
-    }));
-    watch('./img/**/*', batch(function(events, done) {
-        gulp.start('img', done);
-    }));
-    watch('./fonts/*', batch(function(events, done) {
-        gulp.start('fonts', done);
-    }));
-});
-
-gulp.task('release', function() {
+    return gulp.src([BUILD_DIRECTORY_BASE + '/assets/js/*.js', '!' + BUILD_DIRECTORY_BASE + '/assets/js/*min.js'])
+        .pipe(strip())
+        .pipe(minify({
+            ext: {
+                min: '.js'
+            },
+            noSource: true,
+            mangle: false,
+            compress: false
+        }))
+        .pipe(gulp.dest(BUILD_DIRECTORY_BASE + '/assets/js'));
+}, function(done) {
     'use strict';
-    return gulp.src([BUILD_DIRECTORY_BASE + '/assets/**/*.map'], {read: false})
-        .pipe(clean({force: true}));
-});
 
-gulp.task('start', ['default', 'watch']);
-gulp.task('default', ['css', 'js', 'html', 'img', 'fonts', 'copy']);
+    return gulp.src(BUILD_DIRECTORY_BASE + '/assets/**/*.map', { read: false })
+        .pipe(clean({ force: true }));
+}));
+
+gulp.task('default', gulp.parallel('css', 'js', 'html', 'img', 'fonts', 'copy'));
+gulp.task('start', gulp.series('default', 'watch'));

@@ -1,7 +1,5 @@
 const {app, BrowserWindow, Menu} = require('electron');
 
-if (require('electron-squirrel-startup')) return;
-
 const path = require('path');
 const url = require('url');
 
@@ -189,17 +187,19 @@ function appReady() {
     }
 }
 
-app.on('ready', appReady);
+if (!require('electron-squirrel-startup')) {
+    app.on('ready', appReady);
 
-// Quit when all windows are closed.
-app.on('window-all-closed', function () {
-    if (process.platform !== 'darwin') {
-        app.quit();
-    }
-});
+    // Quit when all windows are closed.
+    app.on('window-all-closed', function () {
+        if (process.platform !== 'darwin') {
+            app.quit();
+        }
+    });
 
-app.on('activate', function () {
-    if (windows.length === 0) {
-        createWindow();
-    }
-});
+    app.on('activate', function () {
+        if (windows.length === 0) {
+            createWindow();
+        }
+    });
+}

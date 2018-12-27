@@ -6,6 +6,7 @@ exec('rm -rf static/');
 exec('rm -rf node_modules/');
 exec('npm install');
 exec('gulp');
+exec('gulp release');
 
 const windowsInstaller = require('electron-winstaller');
 const macInstaller = require('electron-installer-dmg');
@@ -15,7 +16,7 @@ function packageApp(platform) {
     let packager = require('electron-packager');
     return packager({
         dir: '.',
-        appCopyright: 'Copyright © Ian Spence 2018',
+        appCopyright: 'Copyright © Ian Spence 2017-2019',
         arch: 'x64',
         icon: 'static/assets/img/icon',
         name: 'Media Player',
