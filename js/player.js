@@ -26,6 +26,9 @@ $(function() {
     setupVideoControls();
 });
 
+/**
+ * Setup the video player controls. Only call this once.
+ */
 function setupVideoControls() {
     videoControls = document.getElementById('video-controls');
     var playpause = document.getElementById('playpause');
@@ -46,7 +49,11 @@ function setupVideoControls() {
     });
 }
 
+/**
+ * Toggle playback of the video
+ */
 function playPauseVideo() {
+    // Unblue the playpause button to prevent the space bar hotkey from interfering with it
     document.getElementById('playpause').blur();
     if (video.paused || video.ended) {
         video.play();
@@ -55,6 +62,9 @@ function playPauseVideo() {
     }
 }
 
+/**
+ * Toggle the play pause icon on the button
+ */
 function togglePlaypauseIcon() {
     if (video.paused) {
         $('#playpauseicon').attr('class', 'fas fa-play');
@@ -63,6 +73,9 @@ function togglePlaypauseIcon() {
     }
 }
 
+/**
+ * Toggle the mute icon on the button
+ */
 function toggleMuteIcon() {
     if (video.muted) {
         $('#muteicon').attr('class', 'fas fa-volume-mute');
@@ -71,6 +84,9 @@ function toggleMuteIcon() {
     }
 }
 
+/**
+ * Update the video progress bar
+ */
 function updateVideoProgress() {
     var progress = document.getElementById('progress');
     var value = 0;
@@ -80,16 +96,19 @@ function updateVideoProgress() {
     progress.value = value;
 }
 
+// On macOS capture the theme change notification to reload the app theme
 systemPreferences.subscribeNotification( 'AppleInterfaceThemeChangedNotification', function() {
     updateDarkMode(systemPreferences.isDarkMode());
 });
 updateDarkMode(systemPreferences.isDarkMode());
-
 function updateDarkMode(isDark) {
     $('body').toggleClass('light', !isDark);
     $('body').toggleClass('dark', isDark);
 }
 
+/**
+ * Shuffle checkbox control
+ */
 $('#shuffle').change(toggleShuffle);
 function toggleShuffle() {
     playbackOptions.shuffle = !playbackOptions.shuffle;
@@ -97,6 +116,9 @@ function toggleShuffle() {
     syncApplicationMenu();
 }
 
+/**
+ * Prompt for deletion checkbox control
+ */
 $('#delete_prompt').change(togglePrompt);
 function togglePrompt() {
     playbackOptions.promptDelete = !playbackOptions.promptDelete;
@@ -104,6 +126,9 @@ function togglePrompt() {
     syncApplicationMenu();
 }
 
+/**
+ * Permenatly delete checkbox control
+ */
 $('#perm_delete').change(togglePerm);
 function togglePerm() {
     playbackOptions.permDelete = !playbackOptions.permDelete;
@@ -111,6 +136,9 @@ function togglePerm() {
     syncApplicationMenu();
 }
 
+/**
+ * Sync the player window with the application menu
+ */
 function syncApplicationMenu() {
     let menu = app.getApplicationMenu();
 
@@ -127,12 +155,16 @@ function syncApplicationMenu() {
 
 document.addEventListener('keydown', function(event) {
     if (event.key === 'ArrowLeft' || event.key === 'j') {
+        // Next in folder
         changeMedia(true);
     } else if (event.key === 'ArrowRight' || event.key === 'k') {
+        // Previous in folder
         changeMedia(false);
     } else if (event.key === 'Backspace' || event.key === 'Delete' || event.key === 'x') {
+        // Delete
         deleteMedia();
     } else if (event.key === ' ') {
+        // Play/Pause for videos
         if (video !== undefined) {
             playPauseVideo();
         }
@@ -196,8 +228,9 @@ const stripChars = {
     '/': '&#x2F;',
     '`': '&#x60;',
     '=': '&#x3D;'
-  };
+};
 
+// Used to prevent XSS in filenames
 function stripHTML(unsafe) {
     return String(unsafe).replace(/[&<>"'`=\/]/g, function (s) {
           return stripChars[s];

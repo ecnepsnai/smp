@@ -4,6 +4,7 @@ exec('rm -rf build/');
 exec('mkdir -p build/artifacts');
 exec('rm -rf static/');
 exec('rm -rf node_modules/');
+exec('./install.sh');
 exec('npm install');
 exec('gulp');
 exec('gulp release');
@@ -53,6 +54,7 @@ function buildWindows() {
             appDirectory: 'build/Media Player-win32-x64',
             outputDirectory: 'build/artifacts',
             title: 'Media Player',
+            iconUrl: 'https://raw.githubusercontent.com/ecnepsnai/Media-Player/master/img/icon.ico',
             setupIcon: 'img/icon.ico',
             exe: 'Media Player.exe',
             setupExe: 'Media-Player-' + package.version + '.exe',

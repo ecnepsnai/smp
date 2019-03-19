@@ -22,7 +22,8 @@ function createWindow () {
     });
     windows.push(window);
 
-    window.webContents.openDevTools();
+    // Uncomment to open devtools when player window shows
+    // window.webContents.openDevTools();
 
     window.loadURL(url.format({
         pathname: path.join(staticDir, 'index.html'),
