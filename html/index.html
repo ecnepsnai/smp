@@ -5,6 +5,7 @@
     <meta http-equiv="Content-Security-Policy" content="script-src 'self'">
     <title>Media Player</title>
     <link rel="stylesheet" href="assets/css/main.css" />
+    <link rel="stylesheet" href="assets/css/fontawesome.css" />
 </head>
 <body class="light">
     <div id="window-drag"></div>
@@ -14,8 +15,8 @@
             <h1>Media Player</h1>
         </div>
         <p>Please open a directory containing media files.</p>
-        <span class="button" id="open_dir_button">Open Directory</span>
-        <span class="button" id="open_file_button">Open Single File</span>
+        <span class="button" id="open_dir_button"><i class="fas fa-folder-open"></i> Directory</span>
+        <span class="button" id="open_file_button"><i class="fas fa-file-video"></i> Single File</span>
         <p>
             <label for="shuffle"><input type="checkbox" id="shuffle"> Shuffle</label>
             <label for="delete_prompt"><input type="checkbox" id="delete_prompt" checked> Prompt For Delete</label>
@@ -24,6 +25,12 @@
     </div>
     <div id="title" style="display:none"></div>
     <div id="browser" style="display:none">
+        <div id="video-controls" class="controls" style="display:none">
+            <button id="playpause" type="button" data-state="play"><i id="playpauseicon" class="fas fa-pause"></i></i></button>
+            <progress id="progress" value="0" min="0" max="1"></progress>
+            <button id="mute" type="button" data-state="mute"><i id="muteicon" class="fas fa-volume-up"></i></button>
+            <button id="fs" type="button" data-state="go-fullscreen"><i class="fas fa-expand"></i></button>
+        </div>
     </div>
 </body>
 

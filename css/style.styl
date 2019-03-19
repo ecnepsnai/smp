@@ -94,4 +94,33 @@ a
     display: flex
     align-items: center
     justify-content: center
+    flex-direction: column-reverse
     height: 100vh
+
+    #video-controls
+        padding-top: 5px
+        padding-bottom: 5px
+        width: 100%
+        display: grid
+        grid-template-columns: 5% 85% 5% 5%
+        grid-template-rows: 1fr
+        grid-template-areas: ". . ."
+
+        button
+            -webkit-appearance: none
+            border: none
+            background: none
+            color: #ffffff
+            margin: 0 5px
+
+        progress
+            width: 100%
+            -webkit-appearance: none
+
+            &::-webkit-progress-bar
+                background: #333
+                border-radius: 10px
+
+            &::-webkit-progress-value
+                border-radius: 10px
+                background-color: #fff

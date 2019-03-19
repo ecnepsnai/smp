@@ -8,6 +8,10 @@ let playbackOptions = {
     permDelete: false
 };
 
+var videoControls;
+var video;
+var mediaElement;
+
 $(function() {
     syncApplicationMenu();
     toggleView(false);
@@ -18,7 +22,63 @@ $(function() {
             'padding-top': '1em'
         });
     }
+
+    setupVideoControls();
 });
+
+function setupVideoControls() {
+    videoControls = document.getElementById('video-controls');
+    var playpause = document.getElementById('playpause');
+    var mute = document.getElementById('mute');
+    var progress = document.getElementById('progress');
+    var fs = document.getElementById('fs');
+
+    playpause.addEventListener('click', playPauseVideo);
+    mute.addEventListener('click', function() {
+        video.muted = !video.muted;
+    });
+    progress.addEventListener('click', function(e) {
+        var pos = (e.pageX  - (this.offsetLeft + this.offsetParent.offsetLeft)) / this.offsetWidth;
+        video.currentTime = pos * video.duration;
+    });
+    fs.addEventListener('click', function() {
+        video.webkitRequestFullscreen();
+    });
+}
+
+function playPauseVideo() {
+    document.getElementById('playpause').blur();
+    if (video.paused || video.ended) {
+        video.play();
+    } else {
+        video.pause();
+    }
+}
+
+function togglePlaypauseIcon() {
+    if (video.paused) {
+        $('#playpauseicon').attr('class', 'fas fa-play');
+    } else {
+        $('#playpauseicon').attr('class', 'fas fa-pause');
+    }
+}
+
+function toggleMuteIcon() {
+    if (video.muted) {
+        $('#muteicon').attr('class', 'fas fa-volume-mute');
+    } else {
+        $('#muteicon').attr('class', 'fas fa-volume-up');
+    }
+}
+
+function updateVideoProgress() {
+    var progress = document.getElementById('progress');
+    var value = 0;
+    if (video.currentTime > 0) {
+        value = video.currentTime / video.duration;
+    }
+    progress.value = value;
+}
 
 systemPreferences.subscribeNotification( 'AppleInterfaceThemeChangedNotification', function() {
     updateDarkMode(systemPreferences.isDarkMode());
@@ -72,6 +132,10 @@ document.addEventListener('keydown', function(event) {
         changeMedia(false);
     } else if (event.key === 'Backspace' || event.key === 'Delete' || event.key === 'x') {
         deleteMedia();
+    } else if (event.key === ' ') {
+        if (video !== undefined) {
+            playPauseVideo();
+        }
     }
 });
 
@@ -164,19 +228,32 @@ function isMediaFile(file) {
 }
 
 function showMedia() {
+    if (mediaElement !== undefined) {
+        mediaElement.remove();
+    }
     var media = files[currentFileIdx];
     $title.html(stripHTML(media) + '<br>' + (currentFileIdx + 1) + '/' + files.length);
     if (media.toLowerCase().endsWith('.webm') || media.toLowerCase().endsWith('.mp4')) {
-        var $video = $('<video loop class="media" controls loop></video>');
+        var $video = $('<video loop class="media" loop></video>');
         $video.attr('src', files[currentFileIdx]);
-        $browser.empty();
         $browser.append($video);
         $video[0].play();
+        video = $video[0];
+        mediaElement = $video[0];
+        videoControls.removeAttribute('style');
+        video.addEventListener('timeupdate', updateVideoProgress, false);
+        video.addEventListener('pause', togglePlaypauseIcon, false);
+        video.addEventListener('play', togglePlaypauseIcon, false);
+        video.addEventListener('volumechange', toggleMuteIcon, false);
+        // Not updated automatically on change
+        togglePlaypauseIcon();
     } else {
+        video = undefined;
         var $img = $('<img class="media">');
         $img.attr('src', files[currentFileIdx]);
-        $browser.empty();
         $browser.append($img);
+        mediaElement = $img[0];
+        videoControls.style.display = 'none';
     }
     sizeMedia();
 }
@@ -184,7 +261,7 @@ function showMedia() {
 function sizeMedia() {
     var $media = $('.media');
     $media.css({
-        'max-height': window.innerHeight,
+        'max-height': window.innerHeight - 26,
         'max-width': window.innerWidth
     });
 }
@@ -310,7 +387,9 @@ function toggleView(showPlayer) {
         showMedia();
     } else {
         $('#welcome').show();
-        $browser.empty();
+        if (mediaElement !== undefined) {
+            mediaElement.remove();
+        }
         $browser.hide();
         resizeWindow(false);
     }

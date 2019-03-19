@@ -22,7 +22,7 @@ function createWindow () {
     });
     windows.push(window);
 
-    // window.webContents.openDevTools();
+    window.webContents.openDevTools();
 
     window.loadURL(url.format({
         pathname: path.join(staticDir, 'index.html'),
