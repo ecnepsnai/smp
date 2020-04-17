@@ -18,12 +18,15 @@ function createWindow () {
         backgroundColor: '#F5F5F5',
         autoHideMenuBar: true,
         resizable: false,
-        fullscreenable: false
+        fullscreenable: false,
+        webPreferences: {
+            nodeIntegration: true
+        }
     });
     windows.push(window);
 
     // Uncomment to open devtools when player window shows
-    // window.webContents.openDevTools();
+    window.webContents.openDevTools();
 
     window.loadURL(url.format({
         pathname: path.join(staticDir, 'index.html'),
@@ -58,7 +61,9 @@ function appReady() {
                             title: 'About Media Player',
                             parent: BrowserWindow.getFocusedWindow(),
                             modal: true,
-
+                            webPreferences: {
+                                nodeIntegration: true
+                            }
                         };
 
                         // Give a little more height on macOS for the "close" button
@@ -187,12 +192,13 @@ function appReady() {
         }
     ];
     const menu = Menu.buildFromTemplate(menuTemplate);
-    app.setApplicationMenu(menu);
+    Menu.setApplicationMenu(menu);
 
     try {
         createWindow();
     } catch (e) {
         console.error(e);
+        throw e;
     }
 }
 

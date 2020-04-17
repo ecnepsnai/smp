@@ -6,7 +6,7 @@ $('#github').click(function() {
     shell.openExternal('https://github.com/ecnepsnai/Media-Player');
 });
 
-systemPreferences.subscribeNotification( 'AppleInterfaceThemeChangedNotification', function() {
+systemPreferences.subscribeNotification('AppleInterfaceThemeChangedNotification', function() {
     updateDarkMode(systemPreferences.isDarkMode());
 });
 updateDarkMode(systemPreferences.isDarkMode());

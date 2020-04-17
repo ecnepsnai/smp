@@ -1,4 +1,4 @@
-const {app, dialog, systemPreferences} = require('electron').remote;
+const {app, dialog, systemPreferences, Menu} = require('electron').remote;
 const playerWindow = require('electron').remote.getCurrentWindow();
 const ipc = require('electron').ipcRenderer;
 
@@ -140,7 +140,7 @@ function togglePerm() {
  * Sync the player window with the application menu
  */
 function syncApplicationMenu() {
-    let menu = app.getApplicationMenu();
+    let menu = Menu.getApplicationMenu();
 
     let shuffleMenu = menu.getMenuItemById('toggleShuffle');
     let promptMenu = menu.getMenuItemById('togglePrompt');
