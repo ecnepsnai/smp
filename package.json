@@ -1,12 +1,12 @@
 {
-  "name": "media-player",
+  "name": "smp",
   "version": "1.4.1",
   "description": "A simple media player.",
   "main": "static/assets/js/main.js",
   "scripts": {
     "start": "electron ."
   },
-  "repository": "https://github.com/ecnepsnai/Media-Player",
+  "repository": "https://github.com/ecnepsnai/smp",
   "keywords": [
     "start"
   ],
@@ -34,7 +34,8 @@
     "gulp-strip-comments": "^2.5.2",
     "gulp-stylus": "^2.7.0",
     "gulp-uglify": "^3.0.2",
-    "gulp-watch": "^5.0.1"
+    "gulp-watch": "^5.0.1",
+    "macos-alias": "^0.2.11"
   },
   "dependencies": {
     "electron-squirrel-startup": "^1.0.0",

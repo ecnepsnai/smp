@@ -26,7 +26,7 @@ function createWindow () {
     windows.push(window);
 
     // Uncomment to open devtools when player window shows
-    window.webContents.openDevTools();
+    //window.webContents.openDevTools();
 
     window.loadURL(url.format({
         pathname: path.join(staticDir, 'index.html'),
@@ -49,16 +49,16 @@ function createWindow () {
 function appReady() {
     const menuTemplate = [
         {
-            label: 'Media Player',
+            label: 'SMP',
             submenu: [
                 {
-                    label: 'About Media Player',
+                    label: 'About SMP',
                     click: () => {
                         var options = {
                             icon: path.join(assetsDir, 'images', 'icon.png'),
                             width: 440,
                             height: 170,
-                            title: 'About Media Player',
+                            title: 'About SMP',
                             parent: BrowserWindow.getFocusedWindow(),
                             modal: true,
                             webPreferences: {

@@ -3,7 +3,7 @@ const appVersion = app.getVersion();
 const os = require('os');
 $('#version').text('v' + appVersion);
 $('#github').click(function() {
-    shell.openExternal('https://github.com/ecnepsnai/Media-Player');
+    shell.openExternal('https://github.com/ecnepsnai/SMP');
 });
 
 systemPreferences.subscribeNotification('AppleInterfaceThemeChangedNotification', function() {
