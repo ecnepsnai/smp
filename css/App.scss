@@ -1,0 +1,35 @@
+@import "~@fontsource/fira-sans/index.css";
+
+* {
+    font-family: 'Fira Sans', sans-serif;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
+div#app {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@media (prefers-color-scheme: light) {
+    html,
+    body {
+        color: #000000;
+        background-color: #ffffff;
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    html,
+    body {
+        color: #ffffff;
+        background-color: #333333;
+    }
+}

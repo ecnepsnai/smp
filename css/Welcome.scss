@@ -1,0 +1,35 @@
+.welcome {
+    display: flex;
+
+    .logo {
+        margin-right: 0.75rem;
+
+        img {
+            max-height: 50px;
+        }
+    }
+
+    h1, h5 {
+        margin: 0;
+        padding: 0;
+    }
+
+    @media (prefers-color-scheme: light) {
+        h5 {
+            color: #333333;
+
+            a {
+                color: #49a4ff;
+            }
+        }
+    }
+    @media (prefers-color-scheme: dark) {
+        h5 {
+            color: #999999;
+
+            a {
+                color: #49a4ff;
+            }
+        }
+    }
+}

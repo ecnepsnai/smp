@@ -1,7 +1,7 @@
 node_modules/
-build/
-static/
+dist/
+package/
 .DS_Store
-fontawesome.zip
-fontawesome-free-*
-copy/
+docker/*/build_root
+docker/*.rpm
+docker/*.deb

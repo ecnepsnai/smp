@@ -1,0 +1,32 @@
+.new-version {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    right: 0.75rem;
+    background: -webkit-linear-gradient(-135deg,#49a4ff 25%,#0074e7 100%);
+    box-shadow: 0 10px 16px 0 rgba(0,116,231,.2);
+    border-radius: 5px;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    .content {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .close-button {
+        display: inline-block;
+        appearance: none;
+        border: none;
+        cursor: pointer;
+        color: #ffffff;
+        background: none;
+    }
+
+    a {
+        color: #ffffff;
+    }
+}
