@@ -11,6 +11,7 @@ export class App {
         return process.env['DEVELOPMENT'] === undefined;
     }
 
+    public static permanentlyDeleteFile = false;
     public static promptBeforeDeletingChecked = true;
 
     public static openURL(url: string): void {

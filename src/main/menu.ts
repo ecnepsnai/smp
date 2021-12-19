@@ -89,6 +89,14 @@ export class Menu {
                         }
                     },
                     {
+                        label: 'Permanently Delete File',
+                        type: 'checkbox',
+                        checked: App.permanentlyDeleteFile,
+                        click: () => {
+                            App.permanentlyDeleteFile = !App.permanentlyDeleteFile;
+                        }
+                    },
+                    {
                         label: 'Stop',
                         click: () => {
                             const window = BrowserWindow.getFocusedWindow();

@@ -1,4 +1,4 @@
-import { BrowserWindow } from 'electron';
+import { BrowserWindow, shell } from 'electron';
 import { App } from './app';
 import { Dialog } from './dialog';
 import fs = require('fs');
@@ -40,13 +40,32 @@ export class Media {
         }
 
         try {
-            await this.unlink(path);
-            console.log('Deleted media file', { path: path });
+            if (App.permanentlyDeleteFile) {
+                await this.unlink(path);
+            } else {
+                await this.trash(path);
+            }
             return true;
         } catch (err) {
             console.error('Error deleting file', { path: path, error: err });
             return false;
         }
+    };
+
+    private static trash = (path: string): Promise<void> => {
+        return new Promise((resolve, reject) => {
+            shell.trashItem(path).then(() => {
+                resolve();
+                console.log('Moved media to trash', { path: path });
+            }, err => {
+                console.error('Error moving media to trash', { path: path, error: err });
+                this.unlink(path).then(() => {
+                    resolve();
+                }, err => {
+                    reject(err);
+                });
+            });
+        });
     };
 
     private static unlink = (path: string): Promise<void> => {
@@ -56,6 +75,7 @@ export class Media {
                     reject(err);
                 } else {
                     resolve();
+                    console.log('Deleted media file', { path: path });
                 }
             });
         });
