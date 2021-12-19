@@ -24,6 +24,7 @@ export class Media {
                         }
                     }
                 });
+                paths.sort((a: string, b: string) => a.localeCompare(b, 'en', { numeric: true }));
                 console.log('Open files', { paths: paths });
                 resolve(paths);
             });
@@ -76,6 +77,39 @@ export class Media {
                 } else {
                     resolve();
                     console.log('Deleted media file', { path: path });
+                }
+            });
+        });
+    };
+
+    public static CopyFlagged = async (paths: string[], window: BrowserWindow): Promise<void> => {
+        if (!paths) {
+            return;
+        }
+
+        const dialog = new Dialog(window);
+        const destDir = await dialog.showCopyMediaDialog();
+        if (!destDir) {
+            return;
+        }
+
+        const promises = paths.map(p => {
+            return this.clone(p, path.join(destDir, path.basename(p)));
+        });
+        await Promise.all(promises);
+
+        shell.openPath(destDir);
+
+        return;
+    };
+
+    private static clone = (src: string, dst: string): Promise<void> => {
+        return new Promise((resolve, reject) => {
+            fs.copyFile(src, dst, err => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve();
                 }
             });
         });
