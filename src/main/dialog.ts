@@ -54,6 +54,20 @@ export class Dialog {
         return files;
     }
 
+    public async showCopyMediaDialog(): Promise<string> {
+        const result = await dialog.showOpenDialog(this.parent, {
+            title: 'Copy Flagged Media To',
+            buttonLabel: 'Copy',
+            properties: ['openDirectory', 'createDirectory']
+        });
+
+        if (result.canceled || result.filePaths.length != 1) {
+            return null;
+        }
+
+        return result.filePaths[0];
+    }
+
     public async showDeleteConfirmDialog(): Promise<boolean> {
         return dialog.showMessageBox(this.parent, {
             type: 'question',

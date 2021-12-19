@@ -27,6 +27,10 @@ ipcMain.handle('delete_file', async (event, args) => {
     return Media.Delete(args, browserWindowFromEvent(event.sender));
 });
 
+ipcMain.handle('copy_flagged_media', async (event, args) => {
+    return Media.CopyFlagged(args, browserWindowFromEvent(event.sender));
+});
+
 ipcMain.handle('error_dialog', async (event, args) => {
     return new Dialog(browserWindowFromEvent(event.sender)).showErrorDialog(args[0], args[1], args[2]);
 });

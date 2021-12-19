@@ -9,6 +9,8 @@ import '../../css/App.scss';
 export const App: React.FC = () => {
     const [MediaHash, SetMediaHash] = React.useState(Rand.ID());
     const [MediaFiles, SetMediaFiles] = React.useState<string[]>();
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [FlaggedMediaPaths, SetFlaggedMediaPaths] = React.useState<string[]>();
 
     React.useEffect(() => {
         IPC.onMediaLoad(media => {
@@ -30,6 +32,13 @@ export const App: React.FC = () => {
 
         IPC.onMediaClose(() => {
             SetMediaFiles(undefined);
+        });
+        
+        IPC.onCopyFlaggedMedia(() => {
+            SetFlaggedMediaPaths(paths => {
+                IPC.copyFlaggedMedia(paths);
+                return paths;
+            });
         });
     }, []);
 
@@ -69,13 +78,23 @@ export const App: React.FC = () => {
         });
     };
 
+    const onFlaggedMediaChange = (flaggedMedia: Map<string, boolean>) => {
+        const paths: string[] = [];
+        flaggedMedia.forEach((flagged, path) => {
+            if (flagged) {
+                paths.push(path);
+            }
+        });
+        SetFlaggedMediaPaths(paths);
+    };
+
     const content = () => {
         if (!MediaFiles || MediaFiles.length === 0) {
             IPC.setTitle('Simple Media Player');
             return (<Welcome onOpenDirectory={openDirectoryClick} onOpenFile={openSingleFileClick} />);
         }
 
-        return (<Player filePaths={MediaFiles} onDelete={onDelete} key={MediaHash} />);
+        return (<Player filePaths={MediaFiles} onDelete={onDelete} onFlaggedMediaChange={onFlaggedMediaChange} key={MediaHash} />);
     };
 
     return (

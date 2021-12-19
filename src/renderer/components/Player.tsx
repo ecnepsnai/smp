@@ -1,64 +1,101 @@
 import * as React from 'react';
 import { IPC } from '../services/IPC';
-import '../../../css/Player.scss';
 import { Path } from '../services/Path';
+import { Icon } from './Icon';
+import '../../../css/Player.scss';
 
 export interface PlayerProps {
     filePaths: string[];
     onDelete: (idx: number) => void;
+    onFlaggedMediaChange: (media: Map<string, boolean>) => void;
+}
+interface PlayerState {
+    currentIdx: number;
+    flaggedMedia: Map<string, boolean>;
 }
 export const Player: React.FC<PlayerProps> = (props: PlayerProps) => {
-    const [CurrentIdx, SetCurrentIdx] = React.useState(0);
+    const [State, SetState] = React.useState<PlayerState>({ currentIdx: 0, flaggedMedia: new Map()});
 
+    const CurrentMedia = () => {
+        return props.filePaths[State.currentIdx];
+    };
+    
     React.useEffect(() => {
-        if (CurrentIdx === undefined) {
+        if (State === undefined) {
             return;
         }
 
-        const name = Path.fileName(props.filePaths[CurrentIdx]);
-
+        const name = Path.fileName(CurrentMedia());
+        console.info('Load media', {
+            path: CurrentMedia(),
+            name: name,
+            index: State.currentIdx,
+        });
         IPC.setTitle(name + ' - Simple Media Player');
-    }, [CurrentIdx]);
+        props.onFlaggedMediaChange(State.flaggedMedia);
+    }, [State]);
 
     const nextMedia = () => {
-        SetCurrentIdx(idx => {
-            if (idx >= props.filePaths.length-1) {
-                return 0;
+        SetState(state => {
+            if (state.currentIdx >= props.filePaths.length-1) {
+                state.currentIdx = 0;
+            } else {
+                state.currentIdx += 1;
             }
-            return idx+1;
+
+            return {...state};
         });
     };
 
     const previousMedia = () => {
-        SetCurrentIdx(idx => {
-            if (idx == 0) {
-                return props.filePaths.length-1;
+        SetState(state => {
+            if (state.currentIdx == 0) {
+                state.currentIdx = props.filePaths.length-1;
+            } else {
+                state.currentIdx -= 1;
             }
-            return idx-1;
+
+            return {...state};
         });
     };
     
     const deleteMedia = () => {
-        const path = props.filePaths[CurrentIdx];
+        const path = CurrentMedia();
         IPC.deleteMedia(path).then(deleted => {
             if (!deleted) {
                 return;
             }
 
-            props.onDelete(CurrentIdx);
+            props.onDelete(State.currentIdx);
+        });
+    };
+
+    const flagMedia = () => {
+        SetState(state => {
+            if (state.flaggedMedia.get(props.filePaths[state.currentIdx])) {
+                console.log('Flagging media', { path: props.filePaths[state.currentIdx], flag: false });
+                state.flaggedMedia.set(props.filePaths[state.currentIdx], false);
+            } else {
+                console.log('Flagging media', { path: props.filePaths[state.currentIdx], flag: true });
+                state.flaggedMedia.set(props.filePaths[state.currentIdx], true);
+            }
+            return {...state};
         });
     };
 
     const keyUpEvent = (event: KeyboardEvent) => {
         switch (event.code) {
-        case 'ArrowRight':
+        case 'ArrowLeft':
             previousMedia();
             break;
-        case 'ArrowLeft':
+        case 'ArrowRight':
             nextMedia();
             break;
         case 'Delete':
             deleteMedia();
+            break;
+        case 'KeyF':
+            flagMedia();
             break;
         }
     };
@@ -71,13 +108,22 @@ export const Player: React.FC<PlayerProps> = (props: PlayerProps) => {
         };
     }, []);
 
-    if (!props.filePaths[CurrentIdx]) {
+    if (!CurrentMedia()) {
         return null;
     }
 
+    const flag = () => {
+        if (!State.flaggedMedia.get(CurrentMedia())) {
+            return null;
+        }
+
+        return (<div className="media-flag"><Icon.Flag /></div>);
+    };
+
     return (
         <div className="player">
-            <Media path={props.filePaths[CurrentIdx]} />
+            {flag()}
+            <Media path={CurrentMedia()} />
         </div>
     );
 };

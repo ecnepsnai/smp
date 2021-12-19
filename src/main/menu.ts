@@ -45,15 +45,16 @@ export class Menu {
             {
                 label: 'Edit',
                 submenu: [
-                    { role: 'undo' },
-                    { role: 'redo' },
-                    { type: 'separator' },
-                    { role: 'cut' },
-                    { role: 'copy' },
-                    { role: 'paste' },
-                    { role: 'delete' },
-                    { type: 'separator' },
-                    { role: 'selectAll' }
+                    {
+                        label: 'Copy Flagged Media',
+                        click: () => {
+                            const window = BrowserWindow.getFocusedWindow();
+                            if (!window) {
+                                return;
+                            }
+                            window.webContents.send('media_copy_flagged');
+                        }
+                    },
                 ]
             },
             {

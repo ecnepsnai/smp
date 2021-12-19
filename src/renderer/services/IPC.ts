@@ -1,5 +1,3 @@
-import { RuntimeVersions } from '../types/Versions';
-
 interface PreloadBridge {
     setTitle: (title: string) => void
     openSingleFile: () => Promise<string>
@@ -8,11 +6,12 @@ interface PreloadBridge {
     onMediaLoad: (cb: (event: Electron.IpcRendererEvent, ...args: unknown[]) => void) => void
     onMediaShuffle: (cb: (event: Electron.IpcRendererEvent, ...args: unknown[]) => void) => void
     onMediaClose: (cb: (event: Electron.IpcRendererEvent, ...args: unknown[]) => void) => void
+    onCopyFlaggedMedia: (cb: (event: Electron.IpcRendererEvent, ...args: unknown[]) => void) => void
+    copyFlaggedMedia: (paths: string[]) => Promise<void>
     errorDialog: (title: string, body: string, detail?: string) => Promise<void>
     checkForUpdates: () => Promise<string>
     openInBrowser: (url: string) => void;
     fatalError: (error: unknown, errorInfo: unknown) => void;
-    runtimeVersions: () => Promise<RuntimeVersions>
 }
 
 interface preloadWindow {
@@ -56,6 +55,16 @@ export class IPC {
         });
     }
 
+    public static onCopyFlaggedMedia(cb: () => void): void {
+        return IPC.preload.onCopyFlaggedMedia(() => {
+            cb();
+        });
+    }
+
+    public static copyFlaggedMedia(paths: string[]): Promise<void> {
+        return IPC.preload.copyFlaggedMedia(paths);
+    }
+
     public static errorDialog(title: string, body: string, detail?: string): Promise<void> {
         return IPC.preload.errorDialog(title, body, detail);
     }
@@ -70,9 +79,5 @@ export class IPC {
 
     public static fatalError(error: unknown, errorInfo: unknown): void {
         return IPC.preload.fatalError(error, errorInfo);
-    }
-
-    public static runtimeVersions(): Promise<RuntimeVersions> {
-        return IPC.preload.runtimeVersions();
     }
 }
