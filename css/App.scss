@@ -18,6 +18,23 @@ div#app {
     align-items: center;
 }
 
+.notification {
+    position: absolute;
+    top: 0.25rem;
+    padding: 0.25rem;
+    border-radius: 5px;
+    opacity: 0.5;
+
+    @media (prefers-color-scheme: dark) {
+        color: #000000;
+        background-color: #ffffff;
+    }
+    @media (prefers-color-scheme: light) {
+        color: #ffffff;
+        background-color: #333333;
+    }
+}
+
 @media (prefers-color-scheme: light) {
     html,
     body {

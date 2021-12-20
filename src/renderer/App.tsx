@@ -11,18 +11,25 @@ export const App: React.FC = () => {
     const [MediaFiles, SetMediaFiles] = React.useState<string[]>();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [FlaggedMediaPaths, SetFlaggedMediaPaths] = React.useState<string[]>();
+    const [IsCopyingFlaggedMedia, SetIsCopyingFlaggedMedia] = React.useState(false);
 
     React.useEffect(() => {
         IPC.getFilesFromArgs().then(files => {
             if (!files) {
                 return;
             }
-
-            SetMediaFiles(files);
+            SetMediaFiles(() => {
+                return [...files];
+            });
         });
 
         IPC.onMediaLoad(media => {
-            SetMediaFiles(media);
+            SetMediaFiles(() => {
+                return [...media];
+            });
+            SetFlaggedMediaPaths(() => {
+                return [];
+            });
         });
 
         IPC.onMediaShuffle(() => {
@@ -44,7 +51,10 @@ export const App: React.FC = () => {
         
         IPC.onCopyFlaggedMedia(() => {
             SetFlaggedMediaPaths(paths => {
-                IPC.copyFlaggedMedia(paths);
+                SetIsCopyingFlaggedMedia(true);
+                IPC.copyFlaggedMedia(paths).then(() => {
+                    SetIsCopyingFlaggedMedia(false);
+                });
                 return paths;
             });
         });
@@ -52,12 +62,7 @@ export const App: React.FC = () => {
 
     React.useEffect(() => {
         SetMediaHash(Rand.ID());
-        console.log('Media files', MediaFiles);
     }, [MediaFiles]);
-
-    React.useEffect(() => {
-        console.log('Updating media hash', MediaHash);
-    }, [MediaHash]);
 
     const openDirectoryClick = () => {
         IPC.openDirectory().then(files => {
@@ -105,9 +110,18 @@ export const App: React.FC = () => {
         return (<Player filePaths={MediaFiles} onDelete={onDelete} onFlaggedMediaChange={onFlaggedMediaChange} key={MediaHash} />);
     };
 
+    const copyNotification = () => {
+        if (!IsCopyingFlaggedMedia) {
+            return null;
+        }
+
+        return (<div className="notification">Copying items...</div>);
+    };
+
     return (
         <React.Fragment>
             <UpdateBanner />
+            {copyNotification()}
             {content()}
         </React.Fragment>
     );

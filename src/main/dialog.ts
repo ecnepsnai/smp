@@ -77,6 +77,7 @@ export class Dialog {
                 'Delete',
                 'Cancel'
             ],
+            noLink: true,
             defaultId: 0,
             cancelId: 1
         }).then(result => {
@@ -109,6 +110,7 @@ export class Dialog {
                 'Report Error & Restart',
                 'Restart Simple Media Player'
             ],
+            noLink: true,
             defaultId: 0,
             cancelId: 1,
             title: 'Fatal Error',
@@ -178,9 +180,9 @@ export class Dialog {
 
         const result = await dialog.showMessageBox(this.parent, {
             type: 'info',
-            title: 'Simple Media Player',
-            message: 'Simple Media Player.\n\nCopyright Ian Spence 2017.\nSource released under the MIT license.',
-            detail: 'App: ' + app + '\n' + 'Electron: ' + electron + '\n' + 'NodeJS: ' + nodejs,
+            title: 'About',
+            message: 'Simple Media Player',
+            detail: 'Copyright Ian Spence 2017\nSource released under the MIT license.\n\nApp: ' + app + '\n' + 'Electron: ' + electron + '\n' + 'NodeJS: ' + nodejs,
             noLink: true,
             buttons: [
                 'Dismiss',

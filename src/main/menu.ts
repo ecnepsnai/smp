@@ -18,7 +18,7 @@ export class Menu {
                             }
                             new Dialog(window).showOpenFileDialog().then(file => {
                                 if (file !== null) {
-                                    window.webContents.send('new_media', [file]);
+                                    window.webContents.send('media_load', [file]);
                                 }
                             });
                         }
@@ -33,7 +33,7 @@ export class Menu {
                             }
                             new Dialog(window).showSelectFolderDialog().then(files => {
                                 if (files !== null) {
-                                    window.webContents.send('new_media', files);
+                                    window.webContents.send('media_load', files);
                                 }
                             });
                         }

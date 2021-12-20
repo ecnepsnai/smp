@@ -26,11 +26,6 @@ export const Player: React.FC<PlayerProps> = (props: PlayerProps) => {
         }
 
         const name = Path.fileName(CurrentMedia());
-        console.info('Load media', {
-            path: CurrentMedia(),
-            name: name,
-            index: State.currentIdx,
-        });
         IPC.setTitle(name + ' - Simple Media Player');
         props.onFlaggedMediaChange(State.flaggedMedia);
     }, [State]);
@@ -72,13 +67,8 @@ export const Player: React.FC<PlayerProps> = (props: PlayerProps) => {
 
     const flagMedia = () => {
         SetState(state => {
-            if (state.flaggedMedia.get(props.filePaths[state.currentIdx])) {
-                console.log('Flagging media', { path: props.filePaths[state.currentIdx], flag: false });
-                state.flaggedMedia.set(props.filePaths[state.currentIdx], false);
-            } else {
-                console.log('Flagging media', { path: props.filePaths[state.currentIdx], flag: true });
-                state.flaggedMedia.set(props.filePaths[state.currentIdx], true);
-            }
+            const flag = state.flaggedMedia.get(props.filePaths[state.currentIdx]);
+            state.flaggedMedia.set(props.filePaths[state.currentIdx], !flag);
             return {...state};
         });
     };

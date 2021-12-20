@@ -147,13 +147,22 @@ export class Media {
                 }
 
                 if (info.isDirectory()) {
-                    this.Find(arg).then(resolve, () => {
+                    let dir = arg;
+                    if (!path.isAbsolute(dir)) {
+                        dir = path.join(process.cwd(), dir);
+                    }
+
+                    this.Find(dir).then(resolve, () => {
                         resolve([]);
                     });
                 } else {
+                    let filePath = arg;
                     for (let i = 0; i < this.AllowedExtensions.length; i++) {
-                        if (arg.toLowerCase().endsWith(this.AllowedExtensions[i])) {
-                            resolve([arg]);
+                        if (filePath.toLowerCase().endsWith(this.AllowedExtensions[i])) {
+                            if (!path.isAbsolute(filePath)) {
+                                filePath = path.join(process.cwd(), filePath);
+                            }
+                            resolve([filePath]);
                             return;
                         }
                     }
