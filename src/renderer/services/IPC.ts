@@ -1,4 +1,5 @@
 interface PreloadBridge {
+    getFilesFromArgs: () => Promise<string[]>
     setTitle: (title: string) => void
     openSingleFile: () => Promise<string>
     openDirectory: () => Promise<string[]>
@@ -20,6 +21,10 @@ interface preloadWindow {
 
 export class IPC {
     private static preload: PreloadBridge = (window as unknown as preloadWindow).SMP as PreloadBridge;
+
+    public static getFilesFromArgs(): Promise<string[]> {
+        return IPC.preload.getFilesFromArgs();
+    }
 
     public static setTitle(title: string): void {
         return IPC.preload.setTitle(title);

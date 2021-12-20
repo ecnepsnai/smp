@@ -1,6 +1,7 @@
 import { ipcRenderer, contextBridge } from 'electron';
 
 contextBridge.exposeInMainWorld('SMP', {
+    getFilesFromArgs: () => ipcRenderer.invoke('get_files_from_args'),
     setTitle: (title) => ipcRenderer.send('set_title', title),
     openSingleFile: () => ipcRenderer.invoke('open_single_file'),
     openDirectory: () => ipcRenderer.invoke('open_directory'),

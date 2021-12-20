@@ -10,6 +10,10 @@ const browserWindowFromEvent = (sender: WebContents): BrowserWindow => {
     return windows[0];
 };
 
+ipcMain.handle('get_files_from_args', () => {
+    return Media.FromArgs();
+});
+
 ipcMain.on('set_title', (event, args) => {
     const window = browserWindowFromEvent(event.sender);
     window.title = args;

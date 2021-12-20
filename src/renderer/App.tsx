@@ -13,6 +13,14 @@ export const App: React.FC = () => {
     const [FlaggedMediaPaths, SetFlaggedMediaPaths] = React.useState<string[]>();
 
     React.useEffect(() => {
+        IPC.getFilesFromArgs().then(files => {
+            if (!files) {
+                return;
+            }
+
+            SetMediaFiles(files);
+        });
+
         IPC.onMediaLoad(media => {
             SetMediaFiles(media);
         });

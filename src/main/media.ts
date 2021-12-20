@@ -114,4 +114,52 @@ export class Media {
             });
         });
     };
+
+    public static FromArgs = async (): Promise<string[]> => {
+        const args = process.argv;
+        if (App.isProduction()) {
+            args.splice(0, 1);
+        } else {
+            args.splice(0, 2);
+        }
+        if (!args) {
+            return [];
+        }
+        console.log(args);
+
+        const results = await Promise.all(args.map(this.processArg));
+        const paths: string[] = [];
+        results.forEach(a => {
+            a.forEach(p => {
+                paths.push(p);
+            });
+        });
+        console.log('Found media in args', { paths: paths });
+        return paths;
+    };
+
+    private static processArg = async (arg: string): Promise<string[]> => {
+        return new Promise(resolve => {
+            fs.stat(arg, (err, info) => {
+                if (err) {
+                    resolve([]);
+                    return;
+                }
+
+                if (info.isDirectory()) {
+                    this.Find(arg).then(resolve, () => {
+                        resolve([]);
+                    });
+                } else {
+                    for (let i = 0; i < this.AllowedExtensions.length; i++) {
+                        if (arg.toLowerCase().endsWith(this.AllowedExtensions[i])) {
+                            resolve([arg]);
+                            return;
+                        }
+                    }
+                    resolve([]);
+                }
+            });
+        });
+    };
 }
