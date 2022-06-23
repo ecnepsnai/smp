@@ -11,8 +11,9 @@ interface PreloadBridge {
     copyFlaggedMedia: (paths: string[]) => Promise<void>
     errorDialog: (title: string, body: string, detail?: string) => Promise<void>
     checkForUpdates: () => Promise<string>
-    openInBrowser: (url: string) => void;
-    fatalError: (error: unknown, errorInfo: unknown) => void;
+    openInBrowser: (url: string) => void
+    fatalError: (error: unknown, errorInfo: unknown) => void
+    showFileInfo: (path: string) => Promise<void>
 }
 
 interface preloadWindow {
@@ -84,5 +85,9 @@ export class IPC {
 
     public static fatalError(error: unknown, errorInfo: unknown): void {
         return IPC.preload.fatalError(error, errorInfo);
+    }
+
+    public static showFileInfo(path: string): Promise<void> {
+        return IPC.preload.showFileInfo(path);
     }
 }

@@ -69,3 +69,8 @@ ipcMain.handle('runtime_versions', async () => {
         nodejs: nodejs,
     };
 });
+
+ipcMain.handle('show_file_info', async (event, args) => {
+    const path = args[0] as string;
+    return Media.Stat(path, browserWindowFromEvent(event.sender));
+});

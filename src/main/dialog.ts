@@ -124,55 +124,6 @@ export class Dialog {
         return;
     };
 
-    /**
-     * Prepare an electron modal browser window
-     * @param title The title of the window
-     * @param height The height of the window
-     * @param width The width of the window
-     * @returns A promise that resolves with the browser window object when the window was shown to the user
-     */
-    private electronModal(title: string, height: number, width: number): Promise<BrowserWindow> {
-        return new Promise((resolve, reject) => {
-            const paths = Paths.default();
-            const modalWindow = new BrowserWindow({
-                parent: this.parent,
-                height: height,
-                width: width,
-                resizable: false,
-                maximizable: false,
-                minimizable: false,
-                webPreferences: {
-                    sandbox: true,
-                    preload: paths.preloadJS,
-                    contextIsolation: true,
-                },
-                autoHideMenuBar: true,
-                modal: true,
-                title: title,
-                icon: paths.icon,
-                show: false
-            });
-            modalWindow.loadFile(paths.indexHTML).then(() => {
-                //
-            }, e => {
-                console.error('Error loading index HTML', e);
-                reject(e);
-            }).catch(e => {
-                console.error('Error loading index HTML', e);
-                reject(e);
-            });
-
-            if (!App.isProduction()) {
-                modalWindow.webContents.openDevTools();
-            }
-
-            modalWindow.on('ready-to-show', () => {
-                modalWindow.show();
-                resolve(modalWindow);
-            });
-        });
-    }
-
     public async showAboutModal(): Promise<void> {
         const app = manifest.version;
         const electron = manifest.dependencies.electron;

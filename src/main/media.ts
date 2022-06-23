@@ -1,8 +1,9 @@
-import { BrowserWindow, shell } from 'electron';
+import { BrowserWindow, dialog, shell } from 'electron';
 import { App } from './app';
 import { Dialog } from './dialog';
 import fs = require('fs');
 import path = require('path');
+import { Formatter } from './formatter';
 
 export class Media {
     public static AllowedExtensions = ['webm', 'webp', 'mp4', 'jpg', 'jpeg', 'png', 'gif', 'bmp'];
@@ -169,6 +170,44 @@ export class Media {
                     resolve([]);
                 }
             });
+        });
+    };
+
+    private static stat = (path: string): Promise<fs.Stats> => {
+        return new Promise((resolve, reject) => {
+            fs.stat(path, (err, info) => {
+                if (err) {
+                    reject(err);
+                    return;
+                }
+                resolve(info);
+            });
+        });
+    };
+
+    public static Stat = async (path: string, window: BrowserWindow): Promise<void> => {
+        const info = await this.stat(path);
+
+        let fileName = '';
+        if (process.platform === 'win32') {
+            const parts = path.split('\\');
+            fileName = parts[parts.length-1];
+        } else {
+            const parts = path.split('/');
+            fileName = parts[parts.length-1];
+        }
+
+        const created = info.ctime.toLocaleString();
+        const modified = info.mtime.toLocaleString();
+        const size = Formatter.BytesBinary(info.size);
+
+        const message = 'Name: ' + fileName + '\nSize: ' + size + '\nCreated at: ' + created + '\nLast modified: ' + modified;
+        await dialog.showMessageBox(window, {
+            type: 'info',
+            title: 'File Information',
+            message: message,
+            noLink: true,
+            buttons: ['Dismiss']
         });
     };
 }

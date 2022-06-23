@@ -73,6 +73,11 @@ export const Player: React.FC<PlayerProps> = (props: PlayerProps) => {
         });
     };
 
+    const statMedia = () => {
+        const path = CurrentMedia();
+        IPC.showFileInfo(path);
+    };
+
     const keyUpEvent = (event: KeyboardEvent) => {
         switch (event.code) {
         case 'ArrowLeft':
@@ -86,6 +91,9 @@ export const Player: React.FC<PlayerProps> = (props: PlayerProps) => {
             break;
         case 'KeyF':
             flagMedia();
+            break;
+        case 'F1':
+            statMedia();
             break;
         }
     };

@@ -16,4 +16,5 @@ contextBridge.exposeInMainWorld('SMP', {
     openInBrowser: (url) => ipcRenderer.send('open_in_browser', url),
     fatalError: (error, errorInfo) => ipcRenderer.send('fatal_error', [error, errorInfo]),
     runtimeVersions: () => ipcRenderer.invoke('runtime_versions', []),
+    showFileInfo: (path) => ipcRenderer.invoke('show_file_info', [path]),
 });
