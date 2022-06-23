@@ -7,7 +7,7 @@ const options = {
     src: '/build_root/package/Simple Media Player-linux-' + arch + '/',
     dest: '/build_root/package/artifacts/',
     arch: arch,
-    icon: '/build_root/package/Simple Media Player-linux-' + arch + '/resources/app/dist/assets/img/certificate-factory.png'
+    icon: '/build_root/package/Simple Media Player-linux-' + arch + '/resources/app/dist/assets/SMP.png'
 }
 
 async function main(options) {

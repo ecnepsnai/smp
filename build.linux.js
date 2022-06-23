@@ -15,7 +15,7 @@ async function make_pkg() {
 (async function main() {
     try {
         await packager.exec('mkdir', ['-p', 'package/artifacts']);
-        await build('x64');
+        await build(process.arch);
         await make_pkg();
     } catch (err) {
         console.error(err);
