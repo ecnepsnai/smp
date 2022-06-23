@@ -1,19 +1,12 @@
-FROM fedora:latest
+FROM registry.fedoraproject.org/fedora:35
 
-ARG NODE_VERSION
-
-RUN dnf install -y rpm-build wget xz tar
+RUN dnf install -y rpm-build curl wget xz tar jq
 
 WORKDIR /tmp
 
-RUN wget https://nodejs.org/dist/${NODE_VERSION}/node-${NODE_VERSION}-linux-x64.tar.xz && \
-    xz --decompress node-${NODE_VERSION}-linux-x64.tar.xz && \
-    tar -xf node-${NODE_VERSION}-linux-x64.tar && \
-    rm node-${NODE_VERSION}-linux-x64.tar && \
-    mv node-${NODE_VERSION}-linux-x64 /usr/share/node && \
-    ln -s /usr/share/node/bin/node /usr/bin/node && \
-    ln -s /usr/share/node/lib/node_modules/npm/bin/npm-cli.js /usr/bin/npm && \
-    ln -s /usr/share/node/lib/node_modules/npm/bin/npx-cli.js /usr/bin/npx
+ADD install_node.sh /
+ADD spec.patch /
+RUN chmod +x /install_node.sh && /bin/bash /install_node.sh
 
 VOLUME [ "/build_root" ]
 ADD "entrypoint.sh" /entrypoint.sh

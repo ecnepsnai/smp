@@ -1,4 +1,6 @@
 #!/bin/sh
+set -e
+set -x
 
 cd /build_root
 npm init -y

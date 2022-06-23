@@ -1,21 +1,24 @@
-const installer = require('electron-installer-debian')
+const os = require('os');
+const installer = require('electron-installer-debian');
+
+const arch_long = os.arch() === 'arm64' ? 'arm64' : 'x64';
 
 const options = {
-    src: '/build_root/package/Simple Media Player-linux-x64/',
+    src: '/build_root/package/Simple Media Player-linux-' + arch_long + '/',
     dest: '/build_root/package/artifacts/',
-    arch: 'x86_64',
-    icon: '/build_root/package/Simple Media Player-linux-x64/resources/app/dist/assets/SMP.png'
+    arch: arch_long,
+    icon: '/build_root/package/Simple Media Player-linux-' + arch_long + '/resources/app/dist/assets/img/certificate-factory.png'
 }
 
-async function main (options) {
-    console.log('Building .deb package...')
+async function main(options) {
+    console.log('Building .deb package...', options);
 
     try {
-        await installer(options)
-        console.log('Finished')
+        await installer(options);
+        console.log('Finished');
     } catch (err) {
-        console.error(err, err.stack)
-        process.exit(1)
+        console.error(err, err.stack);
+        process.exit(1);
     }
 }
-main(options)
+main(options);
