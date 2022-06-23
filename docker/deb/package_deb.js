@@ -7,7 +7,7 @@ const options = {
     icon: '/build_root/package/Simple Media Player-linux-x64/resources/app/dist/assets/SMP.png'
 }
 
-async function main(options) {
+async function main (options) {
     console.log('Building .deb package...')
 
     try {
